@@ -58,6 +58,7 @@ for i = 1:(length(velocity_bins)-1)
 % average if more than one line
     N = nanmean(DATA.N(n,:),1);
     T = nanmean(DATA.T29m(n,:),1);
+    
     dp_mean = nanmean(DATA.dp_mean(n,:),1);
     ust = nanmean(DATA.ust(n));
     U10m = nanmean(DATA.U10m(n));
@@ -124,7 +125,7 @@ end
 
 figure(2)
 plot(velocity_bins(1:(length(velocity_bins)-1)), num_points,'b*-','linewidth',2);
-xlabel('Velocity bins (m/s)','fontsize',20);
+xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('No: of Data points', 'fontsize', 20)
 title('Number of data points per velocity bin','fontsize',20)
 %legend('0-2','asdasd')
@@ -146,6 +147,7 @@ plot(velocity_bins(1:(length(velocity_bins)-1)),alpha.*beta, 'r*-','linewidth', 
 xlabel('Velocity bins (m/s)','fontsize',18)
 ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
+
 
 
 % polynomial fit to data 
@@ -218,6 +220,45 @@ plot(velocity_bins(1:(length(velocity_bins)-1)),meanT, 'r*-','linewidth', 3)
 xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('Mean Temperature (C)', 'fontsize',20)
 title('Mean Temperature (C) vs velocity bins','fontsize',22)
+
+figure(7)
+
+t_series = datenum(DATA.t);
+t_org = datetime(t_series,'ConvertFrom','datenum');
+
+N_Total = nansum(DATA.N,2);
+U_series = DATA.U29m;
+dmean_series = DATA.dp_mean
+Temp_series = DATA.T29m;
+
+subplot(4,1,2)
+plot(t_org,dmean_series)
+title('Mean Diameter (micron) vs Time','fontsize',14)
+xlabel('Time','fontsize',14)
+ylabel('D_{mean} (m/s)','fontsize',14)
+
+
+
+
+subplot(4,1,1)
+plot(t_org,DATA.N_sum/1e6)
+set(gca,'YScale','log')
+title('Total Aerosol number concentration (/cm3) vs Time','fontsize',14)
+xlabel('Time','fontsize',14)
+ylabel('N_{Total}','fontsize',14)
+
+subplot(4,1,3)
+plot(t_org,U_series)
+title('Wind Velocity vs Time','fontsize',14)
+xlabel('Time','fontsize',14)
+ylabel('U (m/s)','fontsize',14)
+
+subplot(4,1,4)
+plot(t_org,Temp_series)
+title('Temperature vs Time','fontsize',14)
+xlabel('Time','fontsize',14)
+ylabel('Temperature (C)','fontsize',14)
+
 
 
 

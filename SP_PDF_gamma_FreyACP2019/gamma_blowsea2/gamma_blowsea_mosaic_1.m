@@ -230,6 +230,39 @@ xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('mean Temperture', 'fontsize',20)
 title('mean Temperature vs velocity bins','fontsize',22)
 
+
+figure(7)
+
+t_series = datenum(DATA.t);
+t_org = datetime(t_series,'ConvertFrom','datenum');
+
+N_Total = nansum(DATA.N,2);
+U_series = DATA.U5cm;
+dmean_series = nanmean(DATA.SP_data,2);
+Temp_series = DATA.T;
+
+subplot(3,1,1)
+plot(t_org,DATA.N_sum/1e6)
+set(gca,'YScale','log')
+title('Total Aerosol number concentration (/cm3) vs Time','fontsize',14)
+xlabel('Time','fontsize',14)
+ylabel('N_{Total}','fontsize',14)
+
+subplot(3,1,2)
+plot(t_org,U_series)
+title('Wind Velocity vs Time','fontsize',14)
+xlabel('Time','fontsize',14)
+ylabel('U (m/s)','fontsize',14)
+
+subplot(3,1,3)
+plot(t_org,Temp_series)
+title('Temperature vs Time','fontsize',14)
+xlabel('Time','fontsize',14)
+ylabel('Temperature (C)','fontsize',14)
+
+
+
+
 %{
 % single parameter fit .. using xins method 
 figure(6)
@@ -239,4 +272,6 @@ plot(velocity_bins(1:(length(velocity_bins)-1)),beta_1p, 'b*-','linewidth', 3)
 hold on
 set(gca,'YScale','log')
 %}
+
+
 
