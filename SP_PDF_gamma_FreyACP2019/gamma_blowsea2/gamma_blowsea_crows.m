@@ -35,6 +35,7 @@ beta  = []
 legend_lable = []
 str_temp = []
 num_points = []
+meanT = []
 
 for i = 1:(length(velocity_bins)-1)
 
@@ -56,6 +57,7 @@ for i = 1:(length(velocity_bins)-1)
 %% y-data (pdf) & other
 % average if more than one line
     N = nanmean(DATA.N(n,:),1);
+    T = nanmean(DATA.T29m(n,:),1);
     dp_mean = nanmean(DATA.dp_mean(n,:),1);
     ust = nanmean(DATA.ust(n));
     U10m = nanmean(DATA.U10m(n));
@@ -103,6 +105,7 @@ for i = 1:(length(velocity_bins)-1)
     %str_temp = [str_temp ;str]
     alpha = [alpha p_ret(1)]
     beta  = [beta  p_ret(2)]
+    meanT = [meanT T]
     title('Size distribution for each wind velocity bin','fontsize',20);
     hold on 
     %bar(x,pdf)
@@ -210,7 +213,11 @@ end
 all_error = [alpha_error beta_error]
 writematrix(all_error,'crows_alphabeta_error.csv')
 
-
+figure(6)
+plot(velocity_bins(1:(length(velocity_bins)-1)),meanT, 'r*-','linewidth', 3)
+xlabel('Velocity bins (m/s)','fontsize',20)
+ylabel('Mean Temperature (C)', 'fontsize',20)
+title('Mean Temperature (C) vs velocity bins','fontsize',22)
 
 
 

@@ -18,6 +18,7 @@ fname = sprintf('%sSPC_Unit1104_8cm_1min.mat',pth);
 DATA = load(fname);
 
 
+
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
 t1 = datenum('01-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26'); % this statement is not read in 
@@ -36,6 +37,7 @@ beta_1p = []
 legend_lable = []
 str_temp = []
 num_points = []
+meanT = []
 
 for i = 1:(length(velocity_bins)-1)
 
@@ -57,12 +59,13 @@ for i = 1:(length(velocity_bins)-1)
 %% y-data (pdf) & other
 % average if more than one line
     N = nanmean(DATA.N(n,:),1);
-    
+    T = nanmean(DATA.T(n,:),1);
     %dp_mean = nanmean(DATA.dp_mean(n,:),1);
     %ust = nanmean(DATA.ust(n));
     %U10m = nanmean(DATA.U10m(n));
     % remove bot & top bin of spc number densities because spurious particle detection
     N(:,1) = []; N(:,end) = [];
+    %T(:,1) = []; T(:,end) = [];
     % compute PDF
     N_sum = nansum(N,2);
     pdf = N./(binWidth.*N_sum); 
@@ -103,8 +106,9 @@ for i = 1:(length(velocity_bins)-1)
     
     %
     %str_temp = [str_temp ;str]
-    alpha = [alpha p_ret(1)]
-    beta  = [beta  p_ret(2)]
+    alpha = [alpha p_ret(1)];
+    beta  = [beta  p_ret(2)];
+    meanT = [meanT T]
     title('Size distribution for each wind velocity bin','fontsize',20);
     hold on 
     %bar(x,pdf)
@@ -124,12 +128,13 @@ for i = 1:(length(velocity_bins)-1)
     %}
 
 
+
 end 
 %legend(str_temp)
 
 figure(2)
 plot(velocity_bins(1:(length(velocity_bins)-1)), num_points,'b*-','linewidth',2);
-xlabel('Velocity bins (m/s)','fontsize',20);
+xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('No: of Data points', 'fontsize', 20)
 title('Number of data points per velocity bin','fontsize',20)
 %legend('0-2','asdasd')
@@ -145,17 +150,16 @@ ylabel('alpha', 'fontsize', 18)
 title('(alpha & beta) vs windspeed', 'fontsize', 20)
 legend('alpha','beta')
 
-
 figure(4)
 plot(velocity_bins(1:(length(velocity_bins)-1)),alpha.*beta, 'r*-','linewidth', 3)
 xlabel('Velocity bins (m/s)','fontsize',18)
 ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
 
-poly_order = 10
-alpha_error = zeros(poly_order,2)
-beta_error = zeros(poly_order,2)
-all_error = zeros(poly_order,4)
+poly_order = 10;
+alpha_error = zeros(poly_order,2);
+beta_error = zeros(poly_order,2);
+all_error = zeros(poly_order,4);
 % polynomial fit to data 
 for k=1:poly_order
     velocity_fit_data = velocity_bins(1:2:(length(velocity_bins)-1))
@@ -218,6 +222,13 @@ ylabel('Alpha & Beta', 'fontsize', 18)
 title('(Alpha & Beta) vs windspeed', 'fontsize', 20)
 %title('alpha and beta vs ')
 legend({'Alpha','Alpha fit','Beta','Beta fit'},'fontsize',14)
+
+
+figure(6)
+plot(velocity_bins(1:(length(velocity_bins)-1)),meanT, 'r*-','linewidth', 3)
+xlabel('Velocity bins (m/s)','fontsize',20)
+ylabel('mean Temperture', 'fontsize',20)
+title('mean Temperature vs velocity bins','fontsize',22)
 
 %{
 % single parameter fit .. using xins method 
