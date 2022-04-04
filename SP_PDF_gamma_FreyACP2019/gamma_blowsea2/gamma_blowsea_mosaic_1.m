@@ -133,7 +133,8 @@ end
 %legend(str_temp)
 
 figure(2)
-plot(velocity_bins(1:(length(velocity_bins)-1)), num_points,'b*-','linewidth',2);
+%plot(velocity_bins(1:(length(velocity_bins)-1)), num_points,'b*-','linewidth',2);
+bar(velocity_bins(1:(length(velocity_bins)-1)), num_points);
 xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('No: of Data points', 'fontsize', 20)
 title('Number of data points per velocity bin','fontsize',20)
