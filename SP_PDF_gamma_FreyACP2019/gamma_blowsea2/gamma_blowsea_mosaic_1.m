@@ -30,6 +30,7 @@ velocity_bins = [0,5,10,15,20,25,30]
 velocity_bins = [0,5,10]
 velocity_bins = [0,2,4,6,8,10,12,14]
 velocity_bins = (4:0.2:10)
+velocity_bins = (4:0.2:10)
 alpha = []
 beta  = []
 alpha_1p = []
@@ -38,6 +39,7 @@ legend_lable = []
 str_temp = []
 num_points = []
 meanT = []
+Nsum_array = []
 
 for i = 1:(length(velocity_bins)-1)
 
@@ -90,6 +92,9 @@ for i = 1:(length(velocity_bins)-1)
     x_fine = (0:0.01:max(x))';       % nice smooth line
     pdf_ret = f_build_2p_gamma(x_fine,p_ret);   % calc the curve
     
+    Nsum_slice = nansum(DATA.N_sum(n))/1e6;
+    Nsum_array = [Nsum_array Nsum_slice]
+
     figure(1)   % show it as a bar plot
     
 
@@ -233,6 +238,14 @@ title('mean Temperature vs velocity bins','fontsize',22)
 
 
 figure(7)
+bar(velocity_bins(1:(length(velocity_bins)-1)),Nsum_array)
+xlabel('Velocity bins (m/s)','fontsize',20)
+ylabel('N_{Total} (particles /cm3)', 'fontsize',20)
+title('N_{Total} (/cm3) vs velocity bins','fontsize',22)
+
+
+%{
+figure(7)
 
 t_series = datenum(DATA.t);
 t_org = datetime(t_series,'ConvertFrom','datenum');
@@ -261,6 +274,7 @@ title('Temperature vs Time','fontsize',14)
 xlabel('Time','fontsize',14)
 ylabel('Temperature (C)','fontsize',14)
 
+%}
 
 
 

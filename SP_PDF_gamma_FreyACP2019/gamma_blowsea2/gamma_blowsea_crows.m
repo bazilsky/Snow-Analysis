@@ -19,7 +19,7 @@ DATA = load(fname);
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
-t1 = datenum('01-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26');
+t1 = datenum('17-Jun-2013 00:00'); t2 = datenum('21-Jul-2013 00:00');
 
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
@@ -36,10 +36,17 @@ num_points = []
 meanT = []
 tseries_sample = []
 Useries_sample = []
+Nsum_array = []
+N_sum_temp = []
+
+%flag = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
+
+%DATA_new = DATA(flag)
+
 for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
-    n = find(DATA.U29m(:,1)>=velocity_bins(i) & DATA.U29m(:,1)<velocity_bins(i+1));
+    n = find(DATA.U29m(:,1)>=velocity_bins(i) & DATA.U29m(:,1)<velocity_bins(i+1) & DATA.t(:,1)>=t1 & DATA.t(:,1)<=t2);
     
     if velocity_bins(i)>=15 & velocity_bins(i)<=17
         tseries_sample = [tseries_sample DATA.t(n)']
@@ -96,6 +103,10 @@ for i = 1:(length(velocity_bins)-1)
     x_fine = (0:0.01:max(x))';       % nice smooth line
     pdf_ret = f_build_2p_gamma(x_fine,p_ret);   % calc the curve
     
+    N_sum_temp = nansum(DATA.N,2);
+    Nsum_slice = nansum(N_sum_temp(n))/1e6;
+    Nsum_array = [Nsum_array Nsum_slice]
+
     figure(1)   % show it as a bar plot
     
 
@@ -106,10 +117,6 @@ for i = 1:(length(velocity_bins)-1)
        p_ret(1), ep_ret(1),p_ret(2), ep_ret(2), velocity_bins(i),velocity_bins(i+1));
 
 
-    %str2 = sprintf('U = %d','%d', velocity_bins(i), velocity_bins(i+1), ' ')
-
-    %str = strcat(str2, str)
-    
     %
     %str_temp = [str_temp ;str]
     alpha = [alpha p_ret(1)]
@@ -129,6 +136,7 @@ for i = 1:(length(velocity_bins)-1)
 
     %legend (str)
 end 
+
 t_anomaly = datenum(tseries_sample);
 t_anomaly_final = datetime(t_anomaly,'ConvertFrom','datenum');
 
@@ -163,8 +171,6 @@ plot(velocity_bins(1:(length(velocity_bins)-1)),alpha.*beta, 'r*-','linewidth', 
 xlabel('Velocity bins (m/s)','fontsize',18)
 ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
-
-
 
 % polynomial fit to data 
 alpha_poly = polyfit(velocity_bins(1:(length(velocity_bins)-1)),alpha,7);
@@ -253,9 +259,6 @@ title('Mean Diameter (micron) vs Time','fontsize',14)
 xlabel('Time','fontsize',14)
 ylabel('D_{mean} (m/s)','fontsize',14)
 
-
-
-
 subplot(4,1,1)
 plot(t_org,DATA.N_sum/1e6)
 set(gca,'YScale','log')
@@ -283,7 +286,11 @@ xlabel('Wind Velocity (m/s)','fontsize',20)
 ylabel('Time','fontsize',20)
 
 
-
+figure(9)
+bar(velocity_bins(1:(length(velocity_bins)-1)),Nsum_array)
+xlabel('Velocity bins (m/s)','fontsize',20)
+ylabel('N_{Total} (particles /cm3)', 'fontsize',20)
+title('N_{Total} (/cm3) vs velocity bins','fontsize',22)
 
 
 
