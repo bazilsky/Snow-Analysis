@@ -40,14 +40,12 @@ str_temp = []
 num_points = []
 meanT = []
 Nsum_array = []
-uncertainty_of_mean = []
 
 for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
     n = find(DATA.U5cm(:,1)>=velocity_bins(i) & DATA.U5cm(:,1)<velocity_bins(i+1));
     num_points = [num_points length(n)]
-    uncertainty_of_mean = [uncertainty_of_mean std(DATA.U5cm(n,:))/sqrt(length(n))]
     % 2) example diamond dust/ snow crystals
     % diamond dust #1 observed at 29/07/13 21:38
     % t1 = datenum('29-Jul-2013 20:00'); t2 = datenum('29-Jul-2013 23:00');
@@ -245,17 +243,7 @@ xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('N_{Total} (particles /cm3)', 'fontsize',20)
 title('N_{Total} (/cm3) vs velocity bins','fontsize',22)
 
-qw = [alpha.*beta;uncertainty_of_mean];
 
-figure(8)
-yyaxis left
-bar(velocity_bins(1:(length(velocity_bins)-1)),alpha.*beta)
-
-xlabel('Velocity bins (m/s)','fontsize',20)
-ylabel('Mean Diameter (microns)','fontsize',20)
-yyaxis right
-bar(velocity_bins(1:(length(velocity_bins)-1)),uncertainty_of_mean)
-ylabel('Uncertainty of mean','fontsize',20)
 
 
 %{
