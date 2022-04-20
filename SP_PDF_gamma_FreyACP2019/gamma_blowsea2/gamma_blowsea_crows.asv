@@ -27,7 +27,7 @@ t1 = datenum('17-Jun-2013 00:00'); t2 = datenum('21-Jul-2013 00:00');
 velocity_bins = [0,5,10,15,20,25,30]
 velocity_bins = [0,5,10]
 velocity_bins = [0,2,4,6,8,10,12,14]
-velocity_bins = (4.5:0.5:9)
+velocity_bins = (4.5:0.5:24)
 alpha = []
 beta  = []
 legend_lable = []
@@ -46,10 +46,8 @@ uncertainty_of_mean = []
 for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
-    % below line is for the crows nest data in polarstern
-    %n = find(DATA.U29m(:,1)>=velocity_bins(i) & DATA.U29m(:,1)<velocity_bins(i+1) & DATA.t(:,1)>=t1 & DATA.t(:,1)<=t2);
-    % below line is for the surface blowsea file 
-    n = find(DATA.U20cm(:,1)>=velocity_bins(i) & DATA.U20cm(:,1)<velocity_bins(i+1) & DATA.t(:,1)>=t1 & DATA.t(:,1)<=t2);
+    n = find(DATA.U29m(:,1)>=velocity_bins(i) & DATA.U29m(:,1)<velocity_bins(i+1) & DATA.t(:,1)>=t1 & DATA.t(:,1)<=t2);
+    n = find(DATA.U29m(:,1)>=velocity_bins(i) & DATA.U29m(:,1)<velocity_bins(i+1) & DATA.t(:,1)>=t1 & DATA.t(:,1)<=t2);
     
     if velocity_bins(i)>=15 & velocity_bins(i)<=17
         tseries_sample = [tseries_sample DATA.t(n)']
@@ -57,7 +55,7 @@ for i = 1:(length(velocity_bins)-1)
     end
     
     num_points = [num_points length(n)];
-    uncertainty_of_mean = [uncertainty_of_mean std(DATA.U20cm(n,:))/sqrt(length(n))]
+    uncertainty_of_mean = [uncertainty_of_mean std(DATA.U5cm(n,:))/sqrt(length(n))]
     % 2) example diamond dust/ snow crystals
     % diamond dust #1 observed at 29/07/13 21:38
     % t1 = datenum('29-Jul-2013 20:00'); t2 = datenum('29-Jul-2013 23:00');
@@ -300,12 +298,11 @@ qw = [alpha.*beta;uncertainty_of_mean];
 
 figure(10)
 yyaxis left
-plot(velocity_bins(1:(length(velocity_bins)-1)),alpha.*beta,'b*-','linewidth',2)
+bar(velocity_bins(1:(length(velocity_bins)-1)),alpha.*beta)
 xlabel('Velocity bins (m/s)','fontsize',20)
-set(gca,'YScale','log')
 ylabel('Mean Diameter (microns)','fontsize',20)
 yyaxis right
-plot(velocity_bins(1:(length(velocity_bins)-1)),uncertainty_of_mean,'r*-','linewidth',2)
+bar(velocity_bins(1:(length(velocity_bins)-1)),uncertainty_of_mean)
 ylabel('Uncertainty of mean','fontsize',20)
 
 
