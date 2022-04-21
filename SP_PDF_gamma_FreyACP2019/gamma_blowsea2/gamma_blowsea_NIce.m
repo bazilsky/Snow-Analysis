@@ -30,7 +30,7 @@ velocity_bins = [0,5,10,15,20,25,30]
 velocity_bins = [0,5,10]
 velocity_bins = [0,2,4,6,8,10,12,14]
 velocity_bins = (4:0.2:10)
-velocity_bins = (4:0.2:10)
+velocity_bins = (4:0.5:10)
 alpha = []
 beta  = []
 alpha_1p = []
@@ -46,8 +46,10 @@ for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
     n = find(DATA.ws1_1m(:,1)>=velocity_bins(i) & DATA.ws1_1m(:,1)<velocity_bins(i+1));
-    num_points = [num_points length(n)]
-    uncertainty_of_mean = [uncertainty_of_mean std(nansum(DATA.N(n,:),2))/sqrt(length(n))]
+    num_points = [num_points length(n)];
+
+    nonnan_count = nnz(~isnan(DATA.N(n)));
+    uncertainty_of_mean = [uncertainty_of_mean nanstd(DATA.N(n))/sqrt(nonnan_count)]
     % 2) example diamond dust/ snow crystals
     % diamond dust #1 observed at 29/07/13 21:38
     % t1 = datenum('29-Jul-2013 20:00'); t2 = datenum('29-Jul-2013 23:00');
@@ -56,7 +58,7 @@ for i = 1:(length(velocity_bins)-1)
     %% x-data: 64 SPC particle size bins
     x = DATA.dp_bins(:,3)'; % dp in micron
     binWidth = DATA.dp_bins(:,4)'; % binwidth in micron
-    % remove bot & top bin of spc number densities because spurious particle detection
+    % remove bottom & top bin of spc number densities because spurious particle detection
     x(1) = []; x(end) = [];
     binWidth(1) = []; binWidth(end) = [];
 

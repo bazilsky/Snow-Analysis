@@ -55,9 +55,13 @@ for i = 1:(length(velocity_bins)-1)
         tseries_sample = [tseries_sample DATA.t(n)']
         Useries_sample = [Useries_sample DATA.U29m(n)']
     end
-    
+
+
     num_points = [num_points length(n)];
-    uncertainty_of_mean = [uncertainty_of_mean std(DATA.U20cm(n,:))/sqrt(length(n))]
+
+    nonnan_count = nnz(~isnan(DATA.N(n)));
+    uncertainty_of_mean = [uncertainty_of_mean nanstd(DATA.N(n))/sqrt(nonnan_count)]
+     
     % 2) example diamond dust/ snow crystals
     % diamond dust #1 observed at 29/07/13 21:38
     % t1 = datenum('29-Jul-2013 20:00'); t2 = datenum('29-Jul-2013 23:00');

@@ -5,7 +5,7 @@
 %   MF Todtnauberg, 8.03.2022
 
 clear; close('all');
-days = [datenum('1-Dec-2019 0:00:00'):datenum('3-Dec-2019 0:00:00')]'; % range of days
+days = [datenum('15-Dec-2019 0:00:00'):datenum('23-Dec-2019 0:00:00')]'; % range of days
 
 f_proc_tower_NOAA(days);     % 1) Read (plot) daily 1min-resolution netcdf-files in range (days) and save to *.mat
 
@@ -15,4 +15,4 @@ f_proc_tower_NOAA(days);     % 1) Read (plot) daily 1min-resolution netcdf-files
 % end
 
 % f_CLASP_combine_MOSAiC(days);   % 3) combine daily mat-files
-% f_CLASP_plot_MOSAiC(days);        % 4)plot CLASP on days
+% f_CLASP_plot_MOSAiC(days);      % 4) plot CLASP on days

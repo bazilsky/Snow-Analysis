@@ -58,7 +58,7 @@ for i = 1:(length(velocity_bins)-1)
     %% x-data: 64 SPC particle size bins
     x = DATA.dp_bins(:,3)'; % dp in micron
     binWidth = DATA.dp_bins(:,4)'; % binwidth in micron
-    % remove bot & top bin of spc number densities because spurious particle detection
+    % remove bottom & top bin of spc number densities because spurious particle detection
     x(1) = []; x(end) = [];
     binWidth(1) = []; binWidth(end) = [];
 
