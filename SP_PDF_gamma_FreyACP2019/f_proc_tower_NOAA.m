@@ -6,8 +6,8 @@ function f_proc_tower_NOAA(days)
 
 %% Parameters
 % path from HERE to input/ouput
-pth_in = '../data/_temp/';
-pth_out = '../data/';
+pth_in = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/metcity_data_test/';
+pth_out = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/metcity_data_test/output/';
 % Flags
 flag.proc = 1;         % 1= read net-cdf data / 0= load *.mat file
 flag.plot = 0;         % 1= plot data in range / 0= do not plot
