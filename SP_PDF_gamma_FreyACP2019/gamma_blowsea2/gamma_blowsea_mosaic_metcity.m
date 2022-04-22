@@ -8,14 +8,12 @@
 % MF Cambridge 17.03.2019
 
 close all
-clc
 clear all
 clc
 %% load blowsea data
 %pth = '~/Documents/research/Antarctica/BLOWSEA/DATA/SPC/data/';      % path from HERE to data
-pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/data/' % new path for data files
-fname = sprintf('%sSPC_Unit1104_8cm_1min.mat',pth);
-% fname = sprintf('%sSPC_ice_1min.mat',pth);
+pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/' % new path for data files
+fname = sprintf('%sU1104_8cm_1min.mat',pth);
 DATA = load(fname);
 
 
@@ -46,7 +44,7 @@ uncertainty_of_mean = []
 for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
-    n = find(DATA.U5cm(:,1)>=velocity_bins(i) & DATA.U5cm(:,1)<velocity_bins(i+1));
+    n = find(DATA.U8cm_ex(:,1)>=velocity_bins(i) & DATA.U8cm_ex(:,1)<velocity_bins(i+1));
     num_points = [num_points length(n)];
 
     nonnan_count = nnz(~isnan(DATA.N(n)));
@@ -97,10 +95,13 @@ for i = 1:(length(velocity_bins)-1)
     x_fine = (0:0.01:max(x))';       % nice smooth line
     pdf_ret = f_build_2p_gamma(x_fine,p_ret);   % calc the curve
     
+
     Nsum_temp = nansum(DATA.N,2); % this new line because Nsum doesn't exist 
 
     Nsum_slice = nansum(Nsum_temp(n))/1e6;
-    
+
+
+    %Nsum_slice = nansum(DATA.N_sum(n))/1e6;
     Nsum_array = [Nsum_array Nsum_slice]
 
     figure(1)   % show it as a bar plot
@@ -170,7 +171,7 @@ xlabel('Velocity bins (m/s)','fontsize',18)
 ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
 
-poly_order = 10;
+poly_order = 3;
 alpha_error = zeros(poly_order,2);
 beta_error = zeros(poly_order,2);
 all_error = zeros(poly_order,4);
@@ -222,20 +223,23 @@ beta_fit_val = polyval(beta_poly,xtemp);
 
 
 figure(5)
+yyaxis left
 plot(velocity_bins(1:(length(velocity_bins)-1)),alpha, 'r*-','linewidth', 3)
 hold on
 plot(xtemp,alpha_fit_val, 'k--','linewidth', 2)
 hold on
+ylabel('Alpha', 'fontsize', 18)
+yyaxis right
 plot(velocity_bins(1:(length(velocity_bins)-1)),beta, 'b*-','linewidth', 3)
 hold on
 plot(xtemp,beta_fit_val, 'k.-','linewidth', 2)
 hold on
-set(gca,'YScale','log')
-xlabel('Velocity bins (m/s)','fontsize',18)
-ylabel('Alpha & Beta', 'fontsize', 18)
-title('(Alpha & Beta) vs windspeed', 'fontsize', 20)
+%set(gca,'YScale','log')
+xlabel('U8cm (m/s)','fontsize',18)
+ylabel('Beta', 'fontsize', 18)
+title('(Alpha & Beta) vs Surface windspeed', 'fontsize', 20)
 %title('alpha and beta vs ')
-legend({'Alpha','Alpha fit','Beta','Beta fit'},'fontsize',14)
+%legend({'Alpha','Alpha fit','Beta','Beta fit'},'fontsize',14)
 
 
 figure(6)
@@ -256,12 +260,13 @@ qw = [alpha.*beta;uncertainty_of_mean];
 figure(8)
 yyaxis left
 plot(velocity_bins(1:(length(velocity_bins)-1)),alpha.*beta,'b*-','linewidth',2)
-xlabel('Velocity bins (m/s)','fontsize',20)
+xlabel('U8cm (m/s)','fontsize',20)
 set(gca,'YScale','log')
-ylabel('Mean Diameter (microns)','fontsize',20)
+ylabel('Mean Diameter (\mum)','fontsize',20)
 yyaxis right
-plot(velocity_bins(1:(length(velocity_bins)-1)),uncertainty_of_mean,'r*-','linewidth',2)
-ylabel('Uncertainty of mean','fontsize',20)
+plot(velocity_bins(1:(length(velocity_bins)-1)),num_points,'r*-','linewidth',2)
+ylabel('Number of data points','fontsize',20)
+title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 
 

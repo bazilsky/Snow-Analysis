@@ -97,9 +97,9 @@ for i = 1:(length(velocity_bins)-1)
     x_fine = (0:0.01:max(x))';       % nice smooth line
     pdf_ret = f_build_2p_gamma(x_fine,p_ret);   % calc the curve
     
-    Nsum_temp = nansum(DATA.N,2); % this new line because Nsum doesn't exist 
+    Nsum_temp = nansum(DATA.N,2);
 
-    Nsum_slice = nansum(Nsum_temp(n))/1e6;
+    Nsum_slice = nansum()/1e6;
     
     Nsum_array = [Nsum_array Nsum_slice]
 
