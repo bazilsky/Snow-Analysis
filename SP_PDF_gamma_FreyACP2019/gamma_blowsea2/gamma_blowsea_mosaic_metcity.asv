@@ -28,9 +28,9 @@ t1 = datenum('01-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26'); % this sta
 velocity_bins = [0,5,10,15,20,25,30]
 velocity_bins = [0,5,10]
 velocity_bins = [0,2,4,6,8,10,12,14]
-velocity_bins = (4:0.2:10)
-velocity_bins = (4:0.5:10)
-velocity_bins = (3.75:0.5:10.25)
+velocity_bins = (4:0.2:10);
+velocity_bins = (4:0.5:10);
+velocity_bins = (3.75:0.5:10.25);
 
 new_v_vector  = (4:0.5:10)
 
@@ -232,17 +232,19 @@ beta_fit_val = polyval(beta_poly,xtemp);
 
 figure(5)
 yyaxis left
-plot(new_v_vector,alpha, 'r*-','linewidth', 3)
+plot(new_v_vector,alpha, 'r*','linewidth', 3)
 hold on
-plot(xtemp,alpha_fit_val, 'k--','linewidth', 2)
+plot(xtemp,alpha_fit_val, 'r.-','linewidth', 3)
 hold on
-plot(xtemp,alpha_fit_val+2*std1,'m--',xtemp,alpha_fit_val-2*delta,'m--')
+plot(xtemp,alpha_fit_val+2*std1,'r--',xtemp,alpha_fit_val-2*std1,'r--')
 hold on
 ylabel('Alpha', 'fontsize', 18)
 yyaxis right
-plot(new_v_vector,beta, 'b*-','linewidth', 3)
+plot(new_v_vector,beta, 'b*','linewidth', 3)
 hold on
-plot(xtemp,beta_fit_val, 'k.-','linewidth', 2)
+plot(xtemp,beta_fit_val, 'b.-','linewidth', 3)
+hold on
+plot(xtemp,beta_fit_val+2*std2,'b--',xtemp,beta_fit_val-2*std2,'b--')
 hold on
 %set(gca,'YScale','log')
 xlabel('U8cm (m/s)','fontsize',18)
@@ -265,7 +267,9 @@ xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('N_{Total} (particles /cm3)', 'fontsize',20)
 title('N_{Total} (/cm3) vs velocity bins','fontsize',22)
 
+
 qw = [alpha.*beta;uncertainty_of_mean];
+
 
 figure(8)
 yyaxis left
@@ -278,6 +282,18 @@ plot(new_v_vector,num_points,'r*-','linewidth',2)
 ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
+figure(9)
+
+plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
+hold on 
+scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
+xlabel('U8cm (m/s)','fontsize',20)
+%set(gca,'YScale','log')
+ylabel('Mean Diameter (\mum)','fontsize',20)
+title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
+hcb = colorbar
+hcb.Title.String = "Number of data points";
+hcb.FontSize = 12
 
 
 %{

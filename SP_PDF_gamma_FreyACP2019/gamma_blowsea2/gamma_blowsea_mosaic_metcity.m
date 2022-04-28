@@ -20,7 +20,8 @@ DATA = load(fname);
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
-t1 = datenum('01-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26'); % this statement is not read in 
+t1 = datenum('01-Jul-2013 23:15'); 
+t2 = datenum('14-Jul-2013 23:26'); % this statement is not read in 
 
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
@@ -28,9 +29,9 @@ t1 = datenum('01-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26'); % this sta
 velocity_bins = [0,5,10,15,20,25,30]
 velocity_bins = [0,5,10]
 velocity_bins = [0,2,4,6,8,10,12,14]
-velocity_bins = (4:0.2:10)
-velocity_bins = (4:0.5:10)
-velocity_bins = (3.75:0.5:10.25)
+velocity_bins = (4:0.2:10);
+velocity_bins = (4:0.5:10);
+velocity_bins = (3.75:0.5:10.25);
 
 new_v_vector  = (4:0.5:10)
 
@@ -267,7 +268,9 @@ xlabel('Velocity bins (m/s)','fontsize',20)
 ylabel('N_{Total} (particles /cm3)', 'fontsize',20)
 title('N_{Total} (/cm3) vs velocity bins','fontsize',22)
 
+
 qw = [alpha.*beta;uncertainty_of_mean];
+
 
 figure(8)
 yyaxis left
@@ -280,11 +283,32 @@ plot(new_v_vector,num_points,'r*-','linewidth',2)
 ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
+figure(9)
 
+plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
+hold on 
+scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
+xlabel('U8cm (m/s)','fontsize',20)
+%set(gca,'YScale','log')
+ylabel('Mean Diameter (\mum)','fontsize',20)
+title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
+hcb = colorbar
+hcb.Title.String = "Number of data points";
+hcb.FontSize = 12
+
+
+%finding when the campaign happened 
+
+a1 = datestr(DATA.t, 'mm/dd/YYYY');
+store_month = []
+for i = 1:length(a1)
+   store_month = [store_month str2num(a1(i,1:2))];
+end
+figure(10)
+plot(store_month,store_month)
 
 %{
 figure(7)
-
 t_series = datenum(DATA.t);
 t_org = datetime(t_series,'ConvertFrom','datenum');
 
@@ -325,6 +349,7 @@ plot(velocity_bins(1:(length(velocity_bins)-1)),beta_1p, 'b*-','linewidth', 3)
 hold on
 set(gca,'YScale','log')
 %}
+
 
 
 
