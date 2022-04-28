@@ -20,8 +20,7 @@ DATA = load(fname);
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
-t1 = datenum('01-Jul-2013 23:15'); 
-t2 = datenum('14-Jul-2013 23:26'); % this statement is not read in 
+ 
 
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
@@ -45,6 +44,16 @@ num_points = []
 meanT = []
 Nsum_array = []
 uncertainty_of_mean = []
+
+t1 = datenum('01-Jan-2019 00:00'); 
+t2 = datenum('01-Jan-2020 00:00'); % this statement is not read in
+
+for i=1:12
+    t1 = datenum('01-Jan-2019 00:00');
+    t2 = 
+    
+ 
+
 
 for i = 1:(length(velocity_bins)-1)
 
@@ -99,35 +108,25 @@ for i = 1:(length(velocity_bins)-1)
     %% Plot best fit to scaled data
     x_fine = (0:0.01:max(x))';       % nice smooth line
     pdf_ret = f_build_2p_gamma(x_fine,p_ret);   % calc the curve
-    
 
     Nsum_temp = nansum(DATA.N,2); % this new line because Nsum doesn't exist 
 
     Nsum_slice = nansum(Nsum_temp(n))/1e6;
 
-
     %Nsum_slice = nansum(DATA.N_sum(n))/1e6;
     Nsum_array = [Nsum_array Nsum_slice]
 
-    figure(1)   % show it as a bar plot
     
-
-    %str = sprintf('\\alpha %5.2f \\pm %0.2f, \\beta %5.2f \\pm %0.2f, \\alpha\\beta %3.0f \\mum, d_{p} %3.0f \\mum, U = %d-%2d',...
-    %   p_ret(1), ep_ret(1),p_ret(2), ep_ret(2), p_ret(1).*p_ret(2),alpha, velocity_bins(i),velocity_bins(i+1));
-
-    str = sprintf('\\alpha %5.2f \\pm %0.2f, \\beta %5.2f \\pm %0.2f, U = %2d-%2d m/s',...
-       p_ret(1), ep_ret(1),p_ret(2), ep_ret(2), velocity_bins(i),velocity_bins(i+1));
-
-
-    %str2 = sprintf('U = %d','%d', velocity_bins(i), velocity_bins(i+1), ' ')
-
-    %str = strcat(str2, str)
+   % figure(1)   % show it as a bar plot
     
-    %
-    %str_temp = [str_temp ;str]
     alpha = [alpha p_ret(1)];
     beta  = [beta  p_ret(2)];
     meanT = [meanT T]
+    
+    %{
+    figure(1) 
+    str = sprintf('\\alpha %5.2f \\pm %0.2f, \\beta %5.2f \\pm %0.2f, U = %2d-%2d m/s',...
+       p_ret(1), ep_ret(1),p_ret(2), ep_ret(2), velocity_bins(i),velocity_bins(i+1));
     title('Size distribution for each wind velocity bin','fontsize',20);
     hold on 
     %bar(x,pdf)
@@ -135,21 +134,13 @@ for i = 1:(length(velocity_bins)-1)
     xlabel('d_p (\mum)','fontsize',20);
     ylabel('PDF','fontsize',20);
     %legend (str)
-
-    %{
-    %alpha and beta estimation using xins method
-    totsd = nansum(nansum(DATA.N(n,:).*(DATA.SP_data(n,:) - nanmean(DATA.SP_data(n,:))).^2));
-    beta_1p_temp = totsd/nansum(nansum(DATA.N(n,:)))/nansum(nanmean(DATA.SP_data(n,:)));
-    alpha_1p_temp = nanmean(nanmean(DATA.SP_data(n,:)))/beta_1p_temp;
-    
-    alpha_1p = [alpha_1p alpha_1p_temp]
-    beta_1p  = [beta_1p beta_1p_temp]
     %}
+  
 
 end
 
 %legend(str_temp)
-
+%{
 figure(2)
 %plot(velocity_bins(1:(length(velocity_bins)-1)), num_points,'b*-','linewidth',2);
 bar(new_v_vector, num_points);
@@ -174,6 +165,7 @@ plot(new_v_vector,alpha.*beta, 'r*-','linewidth', 3)
 xlabel('Velocity bins (m/s)','fontsize',18)
 ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
+%}
 
 poly_order = 3;
 alpha_error = zeros(poly_order,2);
@@ -181,10 +173,11 @@ beta_error = zeros(poly_order,2);
 all_error = zeros(poly_order,4);
 % polynomial fit to data 
 for k=1:poly_order
+    
     velocity_fit_data = new_v_vector(1:2:end);
     alpha_fit_data = alpha(1:2:end);
     beta_fit_data = beta(1:2:end);
-
+    
     velocity_test_data = new_v_vector(2:2:end);
     alpha_test_data = alpha(2:2:end);
     beta_test_data = beta(2:2:end);
@@ -213,9 +206,10 @@ for k=1:poly_order
 end
 
 all_error = [alpha_error beta_error]
+%{
 writematrix(all_error,'mosaic_alphabeta_error.csv')
 
-%{ 
+ 
 
 
 % This is the original working code
@@ -230,7 +224,7 @@ beta_fit_val = polyval(beta_poly,xtemp);
 
 %}
 
-
+%{
 figure(5)
 yyaxis left
 plot(new_v_vector,alpha, 'r*','linewidth', 3)
@@ -282,8 +276,9 @@ yyaxis right
 plot(new_v_vector,num_points,'r*-','linewidth',2)
 ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
+%}
 
-figure(9)
+figure(1)
 
 plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
@@ -296,19 +291,18 @@ hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
 
-
+%{
 %finding when the campaign happened 
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 store_month = []
 for i = 1:length(a1)
-   %store_month = [store_month str2num(a1(i,1:2))]; % this is the line for month 
-   store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
+   store_month = [store_month str2num(a1(i,1:2))];
 end
 figure(10)
 plot(store_month,store_month)
 
-%{
+
 figure(7)
 t_series = datenum(DATA.t);
 t_org = datetime(t_series,'ConvertFrom','datenum');
