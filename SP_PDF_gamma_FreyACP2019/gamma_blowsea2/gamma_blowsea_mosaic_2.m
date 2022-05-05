@@ -30,7 +30,7 @@ t1 = datenum('01-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26'); % this sta
 velocity_bins = [0,5,10,15,20,25,30]
 velocity_bins = [0,5,10]
 velocity_bins = [0,2,4,6,8,10,12,14]
-velocity_bins = (4:1:20)
+velocity_bins = (0:1:10)
 alpha = []
 beta  = []
 alpha_1p = []
