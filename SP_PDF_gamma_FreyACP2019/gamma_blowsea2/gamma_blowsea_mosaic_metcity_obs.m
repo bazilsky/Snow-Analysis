@@ -10,13 +10,12 @@
 close all
 clear all
 clc
+
 %% load blowsea data
 %pth = '~/Documents/research/Antarctica/BLOWSEA/DATA/SPC/data/';      % path from HERE to data
 pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/' % new path for data files
 fname = sprintf('%sU1104_8cm_1min.mat',pth);
 DATA = load(fname);
-
-
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
@@ -61,6 +60,24 @@ meanT = []
 Nsum_array = []
 uncertainty_of_mean = []
 
+%calculate mean diameter 
+N_a = DATA.N;
+dp_a = DATA.dp_bins(:,3);
+dp_mean = zeros(length(N_a),1);
+sum_a = 0;
+sum_b = 0;
+for i=1:length(N_a)
+    for j = 1:length(dp_a)
+        sum_a = sum_a+N_a(i,j)*dp_a(j);
+        sum_b = sum_b+N_a(i,j);
+    end
+    dp_mean(i) = sum_a/sum_b;
+    sum_a = 0;
+    sum_b = 0;
+end 
+
+dp_mean_arr = []
+
 for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
@@ -85,7 +102,7 @@ for i = 1:(length(velocity_bins)-1)
 %  average if more than one line
     N = nanmean(DATA.N(n,:),1);
     T = nanmean(DATA.T(n,:),1);
-    %dp_mean = nanmean(DATA.dp_mean(n,:),1);
+    dp_mean_obs = nanmean(dp_mean(n,:),1);
     % ust = nanmean(DATA.ust(n));
     % U10m = nanmean(DATA.U10m(n));
     % remove bot & top bin of spc number densities because spurious particle detection
@@ -122,7 +139,7 @@ for i = 1:(length(velocity_bins)-1)
 
 
     %Nsum_slice = nansum(DATA.N_sum(n))/1e6;
-    Nsum_array = [Nsum_array Nsum_slice]
+    Nsum_array = [Nsum_array Nsum_slice];
 
     figure(1)   % show it as a bar plot
     
@@ -139,7 +156,8 @@ for i = 1:(length(velocity_bins)-1)
     %str_temp = [str_temp ;str]
     alpha = [alpha p_ret(1)];
     beta  = [beta  p_ret(2)];
-    meanT = [meanT T]
+    meanT = [meanT T];
+    dp_mean_arr = [dp_mean_arr dp_mean_obs];
     title('Size distribution for each wind velocity bin','fontsize',20);
     hold on 
     %bar(x,pdf)
@@ -301,6 +319,7 @@ figure(9)
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
+set(gca,'YScale','log')
 xlabel('U8cm (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
@@ -308,7 +327,8 @@ title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
-
+hold on 
+plot(new_v_vector,dp_mean_arr,'k.-')
 
 %finding when the campaign happened 
 

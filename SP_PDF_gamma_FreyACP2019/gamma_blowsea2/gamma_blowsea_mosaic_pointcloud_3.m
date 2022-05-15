@@ -47,7 +47,7 @@ for p = 1: length(velocity_bins)-1
     new_v_vector = [new_v_vector vbin_mean];
 end
 
-new_t_vector = []
+new_t_vector = [];
 %new_v_vector  = (0:0.5:10)
 
 alpha = [];
@@ -65,10 +65,10 @@ flag = 1;
 %for i = 1:(length(velocity_bins)-1)
 counter = 0;
 t1 = 737762;
-step_size = 1;
+step_size = 1/24;
+no_of_days = 155
 U8cm_array = []
 while flag ==1
-    
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
     %n = find(DATA.U8cm_ex(:,1)>=velocity_bins(i) & DATA.U8cm_ex(:,1)<velocity_bins(i+1) & DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
     n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<(t1+step_size));
@@ -148,10 +148,18 @@ while flag ==1
     
     %
     %str_temp = [str_temp ;str]
+    %find another solution at a later date
+    temp_prod = p_ret(1)*p_ret(2);
+    if temp_prod >800
+        p_ret(1) = 10;
+        p_ret(2) = 10;
+    end
+
     alpha = [alpha p_ret(1)];
     beta  = [beta  p_ret(2)];
-    meanT = [meanT T]
-    U8cm_array = [U8cm_array U8cm_mean]
+    
+    meanT = [meanT T];
+    U8cm_array = [U8cm_array U8cm_mean];
     title('Size distribution for each wind velocity bin','fontsize',20);
     hold on 
     %bar(x,pdf)
@@ -169,10 +177,11 @@ while flag ==1
     alpha_1p = [alpha_1p alpha_1p_temp]
     beta_1p  = [beta_1p beta_1p_temp]
     %}
-    t1 = t1+step_size
-    counter = counter + 1
-    if counter == 155
-        flag = 0
+    t1 = t1+step_size;
+    counter = counter + step_size;
+    if counter >no_of_days
+    %if counter >155
+        flag = 0;
     end 
 end
 
@@ -180,7 +189,7 @@ end
 
 figure(2)
 %plot(velocity_bins(1:(length(velocity_bins)-1)), num_points,'b*-','linewidth',2);
-bar(new_t_vector, num_points);
+bar(new_t_vector, num_points)
 xlabel('Velocity bins (m/s)','fontsize', 20)
 ylabel('No: of Data points', 'fontsize', 20)
 title('Number of data points per velocity bin','fontsize',20)
@@ -204,14 +213,37 @@ ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
 
 figure(5)
-scatter(U8cm_array,alpha.*beta,100,num_points,'filled')
+
+d_mean = alpha.*beta;
+scatter(U8cm_array,d_mean,100,num_points,'filled')
 xlabel('U8cm (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
+
 hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
+
+figure(6)
+
+d_mean = alpha.*beta;
+h = binscatter(U8cm_array,d_mean)
+h.ShowEmptyBins = 'on';
+h.NumBins = [20,20]
+xlim(gca,h.XLimits); 
+ylim(gca,h.YLimits); 
+h.XLimits = [0 8];
+h.YLimits = [0 500];
+xlabel('U8cm (m/s)','fontsize',20)
+%set(gca,'YScale','log')
+colormap(gca,'default')
+ylabel('Mean Diameter (\mum)','fontsize',20)
+title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
+
+
+
+
 
 % poly_order = 3;
 % alpha_error = zeros(poly_order,2);
