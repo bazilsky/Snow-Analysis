@@ -82,10 +82,10 @@ for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
     % below line is taking into account the 8cm wind speed
-    n = find(DATA.U8cm_ex(:,1)>=velocity_bins(i) & DATA.U8cm_ex(:,1)<velocity_bins(i+1));
+    %n = find(DATA.U8cm_ex(:,1)>=velocity_bins(i) & DATA.U8cm_ex(:,1)<velocity_bins(i+1));
 
     % below line is for the 2m wind speed 
-    %n = find(DATA.U2m(:,1)>=velocity_bins(i) & DATA.U2m_ex(:,1)<velocity_bins(i+1));
+    n = find(DATA.U2m(1:277920,1)>=velocity_bins(i) & DATA.U2m(1:277920,1)<velocity_bins(i+1));
 
     num_points = [num_points length(n)];
 
@@ -128,7 +128,7 @@ for i = 1:(length(velocity_bins)-1)
     data.x = x;                 % structure for the data
     data.y = pdf;
     p_init = [2.1 70];         % 1st guess for search [shape scale];
-    %p_init = [5 100];     
+    
     %% send the information to f_generic_fit
     % this returns the least square fitted P (p_ret) and the 1-sigma uncertainty in P (ep_ret)
     [p_ret, ep_ret] = f_generic_fit(data,p_init,h,1);
@@ -283,7 +283,7 @@ hold on
 plot(xtemp,beta_fit_val+2*std2,'b--',xtemp,beta_fit_val-2*std2,'b--')
 hold on
 %set(gca,'YScale','log')
-xlabel('U8cm (m/s)','fontsize',18)
+xlabel('U2m (m/s)','fontsize',18)
 ylabel('Beta', 'fontsize', 18)
 title('(Alpha & Beta) vs Surface windspeed', 'fontsize', 20)
 %title('alpha and beta vs ')
@@ -300,9 +300,9 @@ title('mean Temperature vs velocity bins','fontsize',22)
 figure(7)
 bar(new_v_vector,Nsum_array)
 set(gca, 'YScale', 'log')
-xlabel('U8cm (m/s)','fontsize',20)
-ylabel('particles /m3 ', 'fontsize',20)
-title('snow particle concentration (/m3) vs velocity bins','fontsize',22)
+xlabel('U2m (m/s)','fontsize',20)
+ylabel('N_{Total} (particles /cm3)', 'fontsize',20)
+title('N_{Total} (/cm3) vs velocity bins','fontsize',22)
 
 
 qw = [alpha.*beta;uncertainty_of_mean];
@@ -311,7 +311,7 @@ qw = [alpha.*beta;uncertainty_of_mean];
 figure(8)
 yyaxis left
 plot(new_v_vector,alpha.*beta,'b*-','linewidth',2)
-xlabel('U8cm (m/s)','fontsize',20)
+xlabel('U2m (m/s)','fontsize',20)
 set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
 yyaxis right
@@ -324,15 +324,15 @@ figure(9)
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
-set(gca,'YScale','log')
-xlabel('U8cm (m/s)','fontsize',20)
+%set(gca,'YScale','log')
+xlabel('U2m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
-hold on 
+hold on
 plot(new_v_vector,dp_mean_arr,'k.-')
 
 %finding when the campaign happened 
