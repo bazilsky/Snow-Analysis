@@ -200,7 +200,7 @@ while flag ==1
     %}
     t1 = t1+step_size;
     counter = counter + step_size;
-    if counter >no_of_days
+    if counter > no_of_days
     %if counter >155
         flag = 0;
     end 
