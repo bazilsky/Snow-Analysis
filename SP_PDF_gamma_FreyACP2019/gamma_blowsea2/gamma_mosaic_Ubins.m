@@ -115,14 +115,14 @@ ylabel('PDF','fontsize',14);
 zo_1 = 5.6e-5; 
 zo_2 = 2.3e-4;
 
-U1 = DATA.U10m;
+U1 = DATA.U10m_ex;
 
 U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
 
 U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
 diff = U2_2 - U2_1
-a1 = datestr(DATA.t_NOAA, 'mm/dd/YYYY');
+a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
 figure(2)
 plot(a2,diff,'b*')
