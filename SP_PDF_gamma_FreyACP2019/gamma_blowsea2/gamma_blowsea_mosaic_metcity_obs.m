@@ -40,7 +40,10 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (1:0.1:9.5);
+velocity_bins = (3:0.1:9.5);
+new_v_vector = []
+
+velocity_bins = (1.5:0.5:2.1);
 new_v_vector = []
 
 for p = 1: length(velocity_bins)-1
@@ -272,16 +275,16 @@ plot(new_v_vector,alpha, 'r*','linewidth', 3)
 hold on
 plot(xtemp,alpha_fit_val, 'r.-','linewidth', 3)
 hold on
-plot(xtemp,alpha_fit_val+2*std1,'r--',xtemp,alpha_fit_val-2*std1,'r--')
-hold on
+%plot(xtemp,alpha_fit_val+2*std1,'r--',xtemp,alpha_fit_val-2*std1,'r--')
+%hold on
 ylabel('Alpha', 'fontsize', 18)
 yyaxis right
 plot(new_v_vector,beta, 'b*','linewidth', 3)
 hold on
 plot(xtemp,beta_fit_val, 'b.-','linewidth', 3)
 hold on
-plot(xtemp,beta_fit_val+2*std2,'b--',xtemp,beta_fit_val-2*std2,'b--')
-hold on
+%plot(xtemp,beta_fit_val+2*std2,'b--',xtemp,beta_fit_val-2*std2,'b--')
+%hold on
 %set(gca,'YScale','log')
 xlabel('U8cm (m/s)','fontsize',18)
 ylabel('Beta', 'fontsize', 18)
