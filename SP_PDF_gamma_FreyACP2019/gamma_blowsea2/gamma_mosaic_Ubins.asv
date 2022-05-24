@@ -26,8 +26,8 @@ DATA = load(fname);
 t1 = datenum('14-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26');
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
-u_lower = 2.1
-u_higher = 2.2
+u_lower = 2.4
+u_higher = 2.5
 
 %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
 n = find(DATA.U8cm_ex > u_lower & DATA.U8cm_ex<u_higher)
@@ -134,20 +134,15 @@ title('( U8cm @z0 = 2.3e-4 ) - (U8cm @z0 = 5.6e-5)','fontsize', 22);
 %U2 = U1 * log(z2/z0) / log (z1/z0)
 
 
+%a1 = datestr(DATA.t(n,:),'mm/dd,yyyy');
+a2 = datetime(a1);
 
-a3 = datestr(DATA.t(n,:), 'mm/dd/YYYY');
-a4 = datetime(a3);
+a1 = datestr(DATA.t(n,:), 'mm/dd/YYYY');
+a2 = datetime(a1);
 
 figure(3)
-plot(a4, DATA.U8cm_ex(n,:),'b*')
-title('U8cm (m/s) vs Time','fontsize',20)
-xlabel('Time','fontsize',18)
-ylabel('U8cm (m/s)','fontsize',18)
-no_of_data_points = length(a2);
+plot(a2, U2_1(n,:),'b*')
+no_of_data_points = length(a2)
 
 
-figure(4)
-diff = DATA.U8cm_ex - U2_1;
-
-plot(a2,diff,'r.');
 
