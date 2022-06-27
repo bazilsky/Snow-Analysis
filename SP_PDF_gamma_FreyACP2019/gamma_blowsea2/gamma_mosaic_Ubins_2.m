@@ -20,17 +20,28 @@ fname = sprintf('%sU1104_8cm_1min.mat',pth);
 
 % fname = sprintf('%sSPC_ice_1min.mat',pth);
 DATA = load(fname);
+%% estimate two extrapolated wind speeds
+zo_1 = 5.6e-5; 
+zo_2 = 2.3e-4;
+
+U1 = DATA.U10m_ex;
+
+U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
+
+U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
+%%
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
 t1 = datenum('14-Jul-2013 23:15'); t2 = datenum('14-Jul-2013 23:26');
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
-u_lower = 2.1
-u_higher = 2.2
+u_lower = 2.5
+u_higher = 2.6
 
 %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
-n = find(DATA.U8cm_ex > u_lower & DATA.U8cm_ex<u_higher)
+%n = find(DATA.U8cm_ex > u_lower & DATA.U8cm_ex<u_higher)
+n = find(U2_2 > u_lower & U2_2<u_higher)
 
 %calculate mean diameter %%%%%%%%%%%
 N_a = DATA.N;
@@ -113,14 +124,7 @@ ylabel('PDF','fontsize',14);
 
 %% estimate the 8cm wind speed using a different roughness length 
 
-zo_1 = 5.6e-5; 
-zo_2 = 2.3e-4;
 
-U1 = DATA.U10m_ex;
-
-U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
-
-U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
 diff = U2_2 - U2_1
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
@@ -139,15 +143,15 @@ a3 = datestr(DATA.t(n,:), 'mm/dd/YYYY');
 a4 = datetime(a3);
 
 figure(3)
-plot(a4, DATA.U8cm_ex(n,:),'b*')
+plot(a4, U2_2(n),'b*')
 title('U8cm (m/s) vs Time','fontsize',20)
 xlabel('Time','fontsize',18)
 ylabel('U8cm (m/s)','fontsize',18)
 no_of_data_points = length(a2);
 
 
-figure(4)
-diff = DATA.U8cm_ex - U2_1;
 
-plot(a2,diff,'r.');
+
+
+
 

@@ -54,11 +54,21 @@ pdf = N./(binWidth.*N_sum);
 m = find(isnan(pdf) | pdf==0);
 pdf(m) = 1e-12;
 
+x_fine = (0:0.01:max(x))';  
+m = find(isnan(N) | N==0);
+N(m) = 1e-12;
+
+
 %% Fit the best 2P gamma distribution to the noisy data
 h = @f_2p_gamma_diff;       % name of function for search  
 data.x = x;                 % structure for the data
 data.y = pdf;
 p_init = [2.1 70];         % 1st guess for search [shape scale];
+
+%temp_param = fitdist(N','gamma');
+[temp_param,qw] = gamfit(pdf)
+%temp_y = gampdf()
+temp_y= gampdf(x_fine,temp_param(1),temp_param(2))
 
 %% send the information to f_generic_fit
 % this returns the least square fitted P (p_ret) and the 1-sigma uncertainty in P (ep_ret)
@@ -76,6 +86,8 @@ title(str,'fontsize',14);
 hold on 
 bar(x,pdf)
 plot(x_fine,pdf_ret,'r-','linewidth',2);
+hold on 
+plot(x_fine,temp_y,'g-','linewidth',2);
 xlabel('d_p (\mum)','fontsize',14);
 ylabel('PDF','fontsize',14);
 

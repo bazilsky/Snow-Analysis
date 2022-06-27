@@ -393,7 +393,7 @@ density = DATA.MU;
 
 
 %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
-m = find(density<=0.0001 & ~isnan(density) & ~isnan(U2_2));
+m = find(density<=0.001 & ~isnan(density) & ~isnan(U2_2));
 figure(11)
 %plot(U2_2(~isnan(density)),density(~isnan(density)),'r*')
 plot(U2_2(m),density(m),'r.')
@@ -401,7 +401,6 @@ xlabel('U8cm (m/s)','fontsize',20)
 ylabel('Drift density (kg/m3)','fontsize',20)
 title('Drift density (kg/m3) vs U8cm (m/s)','fontsize',18)
 
-figure(12)
 
 vbin = 0:1:9;
 vbin_2 = 0.5:1:8.5;
@@ -412,11 +411,11 @@ for i=1:(length(vbin)-1);
 
 end
 
-
 bar(vbin_2,num_points_2)
 title('Number of data points vs windspeed','fontsize',20);
 xlabel('U8cm','fontsize',18);
-ylabel('Number of data points','fontsize',18);
+ylabel('Number of data points','fontsize',18)
+
 
 
 
@@ -448,7 +447,9 @@ plot(t_org,Temp_series)
 title('Temperature vs Time','fontsize',14)
 xlabel('Time','fontsize',14)
 ylabel('Temperature (C)','fontsize',14)
+
 %}
+
 
 
 %{
