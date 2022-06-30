@@ -340,8 +340,8 @@ plot(new_v_vector,dp_mean_arr,'k.-')
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 store_month = []
 for i = 1:length(a1)
-   %store_month = [store_month str2num(a1(i,1:2))]; % this is the line for month 
-   store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
+   store_month = [store_month str2num(a1(i,1:2))]; % this is the line for month 
+   %store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
 end
 figure(10)
 plot(store_month,store_month)

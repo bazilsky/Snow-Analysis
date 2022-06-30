@@ -95,9 +95,11 @@ plot(store_month,store_month)
 
 %%%%%%%%%%%%%%%%%%%%%
 
-density = DATA.MU;
+avg_bin = 10;
 
-
+density = movmean(DATA.MU,avg_bin);
+U2_2 = movmean(U2_2,avg_bin);
+time_avg = movmean(DATA.t,avg_bin);
 
 %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
 m = find(density<=0.0001 & ~isnan(density) & ~isnan(U2_2));
@@ -128,11 +130,11 @@ ylabel('Number of data points','fontsize',18);
 
 
 figure(13)
-plot(DATA.t(m),density(m),'r.')
+plot(time_avg(m),density(m),'r.')
 
 density_slice = density(m);
 U2_slice      = U2_2(m)
-t_1 = DATA.t(m);
+t_1 = time_avg(m);
 t_2 = t_1(1:(length(t_1)-1),:);
 diff_arr = [];
 Ut_arr   = [];
