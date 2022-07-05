@@ -167,14 +167,15 @@ ylabel('U8cm','FontSize',18)
 xlim([737750 738050])
 
 t_noaa = movmean(DATA2.tower_NOAA.t,avg_bin);
-T_noaa = movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin);
+T_noaa_skin = movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin);
+T_noaa_2m = movmean(DATA2.tower_NOAA.temp_2m,avg_bin);
 
 t_filter = find(t_noaa>733750);
 
 
 subplot(3,1,3)
-plot(t_noaa(t_filter),T_noaa(t_filter),'r.')
-title(' Surface skin temperature vs time','fontsize',20)
+plot(t_noaa(t_filter),T_noaa_2m(t_filter),'r.')
+title(' T_2m vs time','fontsize',20)
 ylabel('Temperature','FontSize',18)
 xlabel('Matlab time','fontsize',18)
 xlim([737750 738050])
@@ -227,7 +228,6 @@ yyaxis right
 plot(movmean(DATA2.tower_NOAA.t,avg_bin),movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin),'r.')
 ylabel('Temperature','FontSize',18)
 title(' (Drift density & Surface skin temperature) vs time ','fontsize',20)
-
 
 time_diff = 0;
 
