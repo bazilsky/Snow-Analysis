@@ -67,7 +67,7 @@ U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 diff = U2_2 - U2_1
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
-figure(2)
+figure(1)
 plot(a2,diff,'b*')
 xlabel('Time','fontsize',14);
 ylabel('U8cm difference (m/s)','fontsize',14);
@@ -90,7 +90,7 @@ for i = 1:length(a1)
    store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
 end
 
-figure(10)
+figure(2)
 plot(store_month,store_month)
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -102,16 +102,17 @@ U2_2 = movmean(U2_2,avg_bin);
 time_avg = movmean(DATA.t,avg_bin);
 
 %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
-m = find(density<=0.0001 & ~isnan(density) & ~isnan(U2_2));
-%m = find(density<10000)
-figure(11)
+%m = find(density<=0.0001 & ~isnan(density) & ~isnan(U2_2));
+m = find(density <= 0.0002 & ~isnan(density) & ~isnan(U2_2));
+q = find(density <= 0.001 & ~isnan(density) & ~isnan(U2_2));
+figure(3)
 %plot(U2_2(~isnan(density)),density(~isnan(density)),'r*')
 plot(U2_2(m),density(m),'r.')
 xlabel('U8cm (m/s)','fontsize',20)
 ylabel('Drift density (kg/m3)','fontsize',20)
 title('Drift density (kg/m3) vs U8cm (m/s)','fontsize',18)
 
-figure(12)
+figure(4)
 
 vbin = 0:1:9;
 vbin_2 = 0.5:1:8.5;
@@ -129,11 +130,15 @@ xlabel('U8cm','fontsize',18);
 ylabel('Number of data points','fontsize',18);
 
 
-figure(13)
-plot(time_avg(m),density(m),'r.')
+figure(5)
+plot(time_avg(q),density(q),'r.')
+title('Drift density time series', 'fontsize', 20);
+xlabel('Matlab time', 'fontsize', 18);
+ylabel('Drift density','FontSize',18);
+
 
 density_slice = density(m);
-U2_slice      = U2_2(m)
+U2_slice      = U2_2(m);
 t_1 = time_avg(m);
 t_2 = t_1(1:(length(t_1)-1),:);
 diff_arr = [];
@@ -142,6 +147,24 @@ t_arr_1    = [];
 del_drift = []; 
 slope_arr = [];
 test = []
+
+figure(6)
+plot(t_1,U2_slice,'LineWidth',2)
+title('*8cm time series','fontsize',20)
+xlabel('Matlab time','FontSize',18)
+ylabel('U8cm','FontSize',18)
+
+figure(7)
+plot(movmean(DATA2.tower_NOAA.t,60),movmean(DATA2.tower_NOAA.skin_temp_surface,60),'r.')
+title(' Surface skin temperature vs time','fontsize',20)
+ylabel('Temperature','FontSize',18)
+xlabel('Matlab time','fontsize',18)
+
+
+
+
+diff_min = 0.00002;
+
 for i = 1:(length(density_slice)-1)
     
     density_diff= density_slice(i+1)-density_slice(i);
@@ -154,7 +177,7 @@ for i = 1:(length(density_slice)-1)
         test = [test density_slope];
     end
 
-    if (density_diff > 0.00005 & density_diff <0.00006)
+    if (density_diff > diff_min)
         Ut     = U2_slice(i);
         t_arr_1  = [t_arr_1;t_2(i,:)];
         Ut_arr = [Ut_arr Ut];
@@ -168,18 +191,18 @@ slope_arr_degrees = atand(slope_arr);
 p = find(slope_arr_degrees(:)>45 & slope_arr_degrees(:)<80);
 
 
-figure(14)
+figure(8)
 plot(Ut_arr,del_drift,'r.','MarkerSize',12)
 %bar(Ut_arr,del_drift)
 title ('(\mu_{t+1} - \mu_t)  vs U8cm','fontsize',20)
 ylabel('(\mu_{t+1} - \mu_t)','fontsize',18)
 xlabel('U8cm (m/s)','FontSize',18)
 
-figure(15)
+figure(9)
 plot(t_arr_1,Ut_arr,'r*')
 title('U8cm vs time')
 
-figure(16)
+figure(10)
 yyaxis left
 xlabel('Time','FontSize',18)
 plot(movmean(DATA.t,10),movmean(density,60),'b.')
