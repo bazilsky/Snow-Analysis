@@ -15,7 +15,9 @@ clc
 %pth = '~/Documents/research/Antarctica/BLOWSEA/DATA/SPC/data/';      % path from HERE to data
 pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/' % new path for data files
 fname = sprintf('%sU1104_8cm_1min.mat',pth);
+fname2 = sprintf('%stower_NOAA_1min.mat',pth);
 DATA = load(fname);
+DATA2 = load(fname2);
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
@@ -128,7 +130,6 @@ ylabel('Number of data points','fontsize',18);
 figure(13)
 plot(DATA.t(m),density(m),'r.')
 
-
 density_slice = density(m);
 U2_slice      = U2_2(m)
 t_1 = DATA.t(m);
@@ -177,6 +178,19 @@ plot(t_arr_1,Ut_arr,'r*')
 title('U8cm vs time')
 
 figure(16)
-plot(DATA.t,density,'b.','MarkerSize',16)
-title('slope vs time','fontsize',20)
+yyaxis left
+xlabel('Time','FontSize',18)
+plot(movmean(DATA.t,10),movmean(density,60),'b.')
+ylabel('drift density','FontSize',18)
+set(gca,'YScale','log')
+yyaxis right
+plot(movmean(DATA2.tower_NOAA.t,60),movmean(DATA2.tower_NOAA.skin_temp_surface,60),'r.')
+ylabel('Temperature','FontSize',18)
+title(' (Drift density & Surface skin temperature) vs time','fontsize',20)
+
+
+time_diff = 0;
+
+
+t
 

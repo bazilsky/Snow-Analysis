@@ -140,6 +140,7 @@ Temp_slice_2 = Temp_avg(q);
 
 
 figure(5)
+subplot(3,1,1)
 plot(time_avg(q),density(q),'r.')
 title('Drift density time series', 'fontsize', 20);
 xlabel('Matlab time', 'fontsize', 18);
@@ -157,14 +158,20 @@ del_drift = [];
 slope_arr = [];
 test = [];
 
-figure(6)
+subplot(3,1,2)
 plot(t_1,U2_slice,'LineWidth',2)
 title('*8cm time series','fontsize',20)
 xlabel('Matlab time','FontSize',18)
 ylabel('U8cm','FontSize',18)
 
-figure(7)
-plot(movmean(DATA2.tower_NOAA.t,60),movmean(DATA2.tower_NOAA.skin_temp_surface,60),'r.')
+t_noaa = movmean(DATA2.tower_NOAA.t,avg_bin);
+T_noaa = movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin);
+
+t_filter = find(t_noaa>733750);
+
+
+subplot(3,1,3)
+plot(movmean(DATA2.tower_NOAA.t,avg_bin),movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin),'r.')
 title(' Surface skin temperature vs time','fontsize',20)
 ylabel('Temperature','FontSize',18)
 xlabel('Matlab time','fontsize',18)
@@ -215,7 +222,7 @@ plot(movmean(DATA.t,10),movmean(density,60),'b.')
 ylabel('drift density','FontSize',18)
 set(gca,'YScale','log')
 yyaxis right
-plot(movmean(DATA2.tower_NOAA.t,60),movmean(DATA2.tower_NOAA.skin_temp_surface,60),'r.')
+plot(movmean(DATA2.tower_NOAA.t,avg_bin),movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin),'r.')
 ylabel('Temperature','FontSize',18)
 title(' (Drift density & Surface skin temperature) vs time ','fontsize',20)
 
@@ -237,4 +244,4 @@ t_points = [737762
 737897
 737918];
 
-z = find(tslice_2 == t_points(2));
+z = find(t_1 == t_points(2));
