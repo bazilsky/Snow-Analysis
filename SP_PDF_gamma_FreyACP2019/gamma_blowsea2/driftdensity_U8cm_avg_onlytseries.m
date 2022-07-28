@@ -27,23 +27,23 @@ t2 = datenum('14-Jul-2013 23:26'); % this statement is not read in
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
 
-velocity_bins = [0,5,10,15,20,25,30]
-velocity_bins = [0,5,10]
-velocity_bins = [0,2,4,6,8,10,12,14]
+velocity_bins = [0,5,10,15,20,25,30];
+velocity_bins = [0,5,10];
+velocity_bins = [0,2,4,6,8,10,12,14];
 velocity_bins = (4:0.2:10);
 velocity_bins = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (3.75:0.5:10.25);
-new_v_vector  = (4:0.5:10)
+new_v_vector  = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (-0.25:0.5:10.25);
-new_v_vector  = (0:0.5:10)
+new_v_vector  = (0:0.5:10);
 
 % new block of code to automate velocity_bins and new_v_vector 
 velocity_bins = (4:0.1:9.5);
-new_v_vector = []
+new_v_vector = [];
 
 
 for p = 1: length(velocity_bins)-1
@@ -64,14 +64,12 @@ U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
 
 U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
-diff = U2_2 - U2_1
+diff = U2_2 - U2_1;
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
-figure(1)
-plot(a2,diff,'b*')
-xlabel('Time','fontsize',14);
-ylabel('U8cm difference (m/s)','fontsize',14);
-title('( U8cm @z0 = 2.3e-4 ) - (U8cm @z0 = 5.6e-5)','fontsize', 22);
+
+
+
 %U2 = U1 * log(z2/z0) / log (z1/z0)
 %%
 
@@ -90,8 +88,7 @@ for i = 1:length(a1)
    store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
 end
 
-figure(2)
-plot(store_month,store_month)
+
 
 %%%%%%%%%%%%%%%%%%%%%
 
@@ -105,14 +102,9 @@ time_avg = movmean(DATA.t,avg_bin);
 %m = find(density<=0.0001 & ~isnan(density) & ~isnan(U2_2));
 m = find(density <= 0.0002 & ~isnan(density) & ~isnan(U2_2));
 q = find(density <= 0.001 & ~isnan(density) & ~isnan(U2_2));
-figure(3)
-%plot(U2_2(~isnan(density)),density(~isnan(density)),'r*')
-plot(U2_2(m),density(m),'r.')
-xlabel('U8cm (m/s)','fontsize',20)
-ylabel('Drift density (kg/m3)','fontsize',20)
-title('Drift density (kg/m3) vs U8cm (m/s)','fontsize',18)
 
-figure(4)
+
+
 
 vbin = 0:1:9;
 vbin_2 = 0.5:1:8.5;
@@ -124,10 +116,7 @@ for i=1:(length(vbin)-1);
 end
 
 
-bar(vbin_2,num_points_2)
-title('Number of data points vs windspeed','fontsize',20);
-xlabel('U8cm','fontsize',18);
-ylabel('Number of data points','fontsize',18);
+
 
 %movmean(DATA2.tower_NOAA.t,60),movmean(DATA2.tower_NOAA.skin_temp_surface;
 
@@ -139,17 +128,11 @@ U2_slice_2 = U2_2(q);
 Temp_slice_2 = Temp_avg(q);
 
 
-figure(5)
-subplot(3,1,1)
-plot(time_avg(q),density(q),'r.')
-title('Drift density time series', 'fontsize', 20);
-xlabel('Matlab time', 'fontsize', 18);
-ylabel('Drift density','FontSize',18);
-xlim([737750 738050])
+
 
 
 density_slice = density(m);
-U2_slice = U2_2(m);
+U2_slice = U1(m); % 10m windspeed
 t_1 = time_avg(m);
 t_2 = t_1(1:(length(t_1)-1),:);
 diff_arr = [];
@@ -159,12 +142,7 @@ del_drift = [];
 slope_arr = [];
 test = [];
 
-subplot(3,1,2)
-plot(t_1,U2_slice,'LineWidth',2)
-title('U8cm time series','fontsize',20)
-xlabel('Matlab time','FontSize',18)
-ylabel('U8cm','FontSize',18)
-xlim([737750 738050])
+
 
 t_noaa = movmean(DATA2.tower_NOAA.t,avg_bin);
 T_noaa_skin = movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin);
@@ -173,12 +151,7 @@ T_noaa_2m = movmean(DATA2.tower_NOAA.temp_2m,avg_bin);
 t_filter = find(t_noaa>733750);
 
 
-subplot(3,1,3)
-plot(t_noaa(t_filter),T_noaa_2m(t_filter),'r.')
-title(' T_2m vs time','fontsize',20)
-ylabel('Temperature','FontSize',18)
-xlabel('Matlab time','fontsize',18)
-xlim([737750 738050])
+
 diff_min = 0.00002;
 
 for i = 1:(length(density_slice)-1)
@@ -207,55 +180,101 @@ slope_arr_degrees = atand(slope_arr);
 p = find(slope_arr_degrees(:)>45 & slope_arr_degrees(:)<80);
 
 
-figure(8)
-plot(Ut_arr,del_drift,'r.','MarkerSize',12)
-%bar(Ut_arr,del_drift)
-title ('(\mu_{t+1} - \mu_t)  vs U8cm','fontsize',20)
-ylabel('(\mu_{t+1} - \mu_t)','fontsize',18)
-xlabel('U8cm (m/s)','FontSize',18)
 
-figure(9)
-plot(t_arr_1,Ut_arr,'r*')
-title('U8cm vs time')
-
-figure(10)
-yyaxis left
-xlabel('Time','FontSize',18)
-plot(movmean(DATA.t,10),movmean(density,60),'b.')
-ylim([1e-6 1e-2])
-ylabel('drift density','FontSize',18)
-set(gca,'YScale','log')
-yyaxis right
-plot(movmean(DATA2.tower_NOAA.t,avg_bin),movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin),'r.')
-ylabel('Temperature','FontSize',18)
-title(' (Drift density & Surface skin temperature) vs time ','fontsize',20)
+rolling_mean_width = 10;
 
 
-figure(11)
+roll_t = movmean(DATA.t,rolling_mean_width);
+roll_density = movmean(density,rolling_mean_width);
+
+roll_t_2 = datestr(roll_t);
+roll_t_3 = datetime(roll_t_2);
+
+roll_vel = movmean(U2_2,rolling_mean_width);
+%roll_temp = movmean();
+
+t_noaa = movmean(DATA2.tower_NOAA.t,rolling_mean_width);
+T_noaa_skin = movmean(DATA2.tower_NOAA.skin_temp_surface,rolling_mean_width);
+T_noaa_2m = movmean(DATA2.tower_NOAA.temp_2m,rolling_mean_width);
+
+t_noaa_2 = datestr(t_noaa);
+t_noaa_3 = datetime(t_noaa_2);
+
+b1 = datestr(roll_t);
+b2 = datetime(b1);
+
+x = find(roll_density == 0);
+dens_zero = roll_density(x);
+
+
+figure(1)
 %yyaxis left
 xlabel('Time','FontSize',18)
-plot(movmean(DATA.t,10),movmean(density,60),'b.')
+%plot(roll_t,roll_density,'b.')
+plot(b2,roll_density,'b.')
 ylim([1e-7 1e-2])
 set(gca,'YScale','log')
-ylabel('drift density','FontSize',18)
-title(' (Drift density vs time ','fontsize',20)
+ylabel('Drift density','FontSize',18)
+title(' Drift density vs time ','fontsize',20)
 grid on
 
 time_diff = 0;
 
-t_points = [737762
-737817
-737820
-737822
-737824
-737834
-737839
-737845
-737856
-737865
-737869
-737877
-737897
-737918];
+figure(2)
+plot(x, roll_t(x),'b.')
+title('Time vs Index', 'fontsize',20)
+xlabel('Index','FontSize',18)
+ylabel('Time','fontsize',18)
 
-z = find(t_1 == t_points(2));
+zeros_index = [];
+time_zero = [];
+vel_zero = [];
+for i = 1:(length(x)-1)
+    if x(i) ~= (x(i+1)-1)
+        zeros_index = [zeros_index x(i+1)]; % these are all the blowing snow events
+        time_zero = [time_zero roll_t_3(i+1)];
+        vel_zero =  [vel_zero  roll_vel(i+1)];
+        
+    end
+end
+
+count = [];
+counter = 0;
+t_noaa_4 = [];
+sample = [];
+T_noaa_skin_2 = [];
+T_noaa_2m_2 = [];
+
+for i = 1:length(time_zero)
+    
+    qw = find(t_noaa_3 == time_zero(i));
+    if length(qw) == 0
+        sample = [sample i];
+    end
+    t_noaa_4 =[t_noaa_4 t_noaa_3(qw)];
+    T_noaa_skin_2 = [T_noaa_skin_2 T_noaa_skin(qw)];
+    T_noaa_2m_2 = [T_noaa_2m_2 T_noaa_2m(qw)];
+    count = [count qw];
+    counter = counter + 1;
+
+end
+
+
+T_fine = linspace(-50,10,100);
+
+Ut0 = 6.975;
+
+Ut = Ut0 + 0.0033.*(T_fine+27.27).^2;
+
+delta = std(Ut);
+
+plot(T_fine,Ut,'r-','LineWidth',2)
+hold on
+plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
+plot(T_noaa_skin_2,vel_zero,'b.','MarkerSize',20)
+title('U10m vs T2m','Fontsize',20)
+xlabel('T2m (C)','FontSize',18)
+ylabel('U10m (m/s)','FontSize',18)
+
+
+

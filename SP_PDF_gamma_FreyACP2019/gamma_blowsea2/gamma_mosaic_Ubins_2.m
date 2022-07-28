@@ -124,8 +124,6 @@ ylabel('PDF','fontsize',14);
 
 %% estimate the 8cm wind speed using a different roughness length 
 
-
-
 diff = U2_2 - U2_1
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
