@@ -381,7 +381,7 @@ p1.FaceAlpha = 0.3;
 %finding when the campaign happened 
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
-store_month = []
+store_month = [];
 
 for i = 1:length(a1)
    %store_month = [store_month str2num(a1(i,1:2))]; % this is the line for month 
