@@ -152,6 +152,7 @@ t_filter = find(t_noaa>733750);
 
 
 
+
 diff_min = 0.00002;
 
 for i = 1:(length(density_slice)-1)
@@ -181,7 +182,7 @@ p = find(slope_arr_degrees(:)>45 & slope_arr_degrees(:)<80);
 
 
 
-rolling_mean_width = 10;
+rolling_mean_width = 10; % 10min average
 
 
 roll_t = movmean(DATA.t,rolling_mean_width);
@@ -196,6 +197,9 @@ roll_vel = movmean(U2_2,rolling_mean_width);
 t_noaa = movmean(DATA2.tower_NOAA.t,rolling_mean_width);
 T_noaa_skin = movmean(DATA2.tower_NOAA.skin_temp_surface,rolling_mean_width);
 T_noaa_2m = movmean(DATA2.tower_NOAA.temp_2m,rolling_mean_width);
+
+T_noaa_diff = T_noaa_skin - T_noaa_2m;
+
 
 t_noaa_2 = datestr(t_noaa);
 t_noaa_3 = datetime(t_noaa_2);
@@ -272,25 +276,34 @@ delta = std(Ut);
 plot(T_fine,Ut,'r-','LineWidth',2)
 hold on
 plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
-plot(T_noaa_2m_2,vel_zero,'b.','MarkerSize',20)
+plot(T_noaa_skin_2,vel_zero,'b.','MarkerSize',20)
 title('U10m vs T2m','Fontsize',20)
-xlabel('T2m (C)','FontSize',18)
+xlabel('T_skin (C)','FontSize',18)
 ylabel('U10m (m/s)','FontSize',18)
 
 T_bins = -50:0.2:10;
 %T_bins = -50:0.2:-49.6
 mean_Tbin = [];
+mean_Tbin_2m =[];
 mean_vel_zero = [];
+vel25 = [];
+vel75 = [];
+
+vel25_2m =[];
+vel75_2m = [];
 
 for i=1:(length(T_bins)-1)
 
-    a = find(T_noaa_2m_2>=T_bins(i) & T_noaa_2m_2<=T_bins(i+1))
+    a = find(T_noaa_skin_2>=T_bins(i) & T_noaa_skin_2<=T_bins(i+1))
     
-    if ~isnan(nanmean(T_noaa_2m_2(a)))
-        mean_Tbin = [mean_Tbin nanmean(T_noaa_2m_2(a))];
+    if ~isnan(nanmean(T_noaa_skin_2(a)))
+        mean_Tbin = [mean_Tbin nanmean(T_noaa_skin_2(a))];
         mean_vel_zero = [mean_vel_zero nanmean(vel_zero(a))];
+        mean_Tbin_2m = [mean_Tbin_2m nanmean(T_noaa_2m_2(a))];
+        vel25  = [vel25 prctile(vel_zero(a),25)];
+        vel75  = [vel75 prctile(vel_zero(a),75)];
+        
 
-        vel25  = [vel_25 prctile(vdp_mean(n,:),25);
     end
 
 end
@@ -301,22 +314,51 @@ plot(T_fine,Ut,'r-','LineWidth',2)
 hold on
 plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
 plot(mean_Tbin,mean_vel_zero,'b.','MarkerSize',20)
-title('U10m vs T2m - 2nd figure','Fontsize',20)
-xlabel('T2m (C)','FontSize',18)
+title('U10m vs T_skin','Fontsize',20)
+xlabel('T_skin (C)','FontSize',18)
 ylabel('U10m (m/s)','FontSize',18)
+
 
 figure(5)
-plot(T_fine,Ut,'r-','LineWidth',2)
-hold on
-plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
 plot(mean_Tbin,mean_vel_zero,'b','LineWidth',2)
-title('U10m vs T2m - 2nd figure','Fontsize',20)
-xlabel('T2m (C)','FontSize',18)
+hold on
+plot(mean_Tbin_2m,mean_vel_zero,'g','LineWidth',2)
+plot(T_fine,Ut,'r-','LineWidth',2)
+
+plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
+
+plot(mean_Tbin,vel25,'b','LineWidth',1)
+plot(mean_Tbin,vel75,'b','LineWidth',1)
+legend('UT vs T_{skin}','UT vs T_{2m}')
+
+p1 = patch([mean_Tbin fliplr(mean_Tbin)], [vel25 fliplr(vel75)], 'k');
+
+%p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
+p1.FaceAlpha = 0.3;
+
+
+
+
+
+%p1 = patch([mean_Tbin fliplr(mean_Tbin)], [vel25 fliplr(vel75)], 'b')
+
+%p1.FaceAlpha = 0.3;
+
+
+title('U10m vs T_skinigure','Fontsize',20)
+xlabel('T_skin (C)','FontSize',18)
 ylabel('U10m (m/s)','FontSize',18)
 
 
 
+figure(6)
+new_t_noaa = datetime(datestr(t_noaa));
+plot(new_t_noaa,T_noaa_diff,'r.','MarkerSize',6)
+title('T_{skin} - T_{2m}','FontSize',20)
+xlabel('Time','FontSize',18)
+ylabel('T_{skin} - T_{2m}','fontsize',18)
 
+figure(7)
 
 
 

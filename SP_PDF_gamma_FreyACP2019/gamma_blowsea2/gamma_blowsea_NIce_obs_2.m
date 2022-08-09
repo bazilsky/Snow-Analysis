@@ -43,7 +43,7 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (1:0.1:13.5);
+velocity_bins = (2:0.1:13.5);
 new_v_vector = []
 
 
@@ -57,13 +57,14 @@ end
 zo_1 = 5.6e-5; 
 zo_2 = 2.3e-4;
 
-z_snow = 0.5
+z_snow = 0.5 %calculate the 8cm wind speed 
+z_given = 23 % 23 m data is the given wind speed (U1)
 
-U1 = DATA.ws1_1m; % this is the velocity at 1m
+U1 = DATA.ws1; % this is the velocity at 1m
 
-U2_1 = U1 * log(z_snow/zo_1)/log(1/zo_1);
+U2_1 = U1 * log(z_snow/zo_1)/log(z_given/zo_1);
 
-U2_2 = U1 * log(z_snow/zo_2)/log(1/zo_2);
+U2_2 = U1 * log(z_snow/zo_2)/log(z_given/zo_2);
 U2_2 = U1; % its already extrapolated
 
 diff = U2_2 - U2_1
