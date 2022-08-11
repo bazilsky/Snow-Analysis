@@ -13,12 +13,9 @@ clc
 
 %% load blowsea data
 %pth = '~/Documents/research/Antarctica/BLOWSEA/DATA/SPC/data/';      % path from HERE to data
-pth_2 = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/'; % new path for data files
-pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/N-ICE/data/'; % PATH FOR NIce
-fname_2 = sprintf('%sU1104_8cm_1min.mat',pth_2);
-fname = sprintf('%sSPC_ice_1min.mat',pth); %surface data for NIce campaign 
+pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/' % new path for data files
+fname = sprintf('%sU1104_8cm_1min.mat',pth);
 DATA = load(fname);
-DATA_2 = load(fname_2)
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
@@ -43,29 +40,29 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (2:0.1:13.5);
+velocity_bins = (1:0.1:15);
 new_v_vector = []
 
 
-
 for p = 1: length(velocity_bins)-1
+    
     vbin_mean = (velocity_bins(p)+velocity_bins(p+1))/2;
     new_v_vector = [new_v_vector vbin_mean];
+    
 end
+
 
 %% estimate new 8cm velocity 
 zo_1 = 5.6e-5; 
 zo_2 = 2.3e-4;
 
-z_snow = 0.5 %calculate the 8cm wind speed 
-z_given = 23 % 23 m data is the given wind speed (U1)
+U1 = DATA.U10m_ex;
 
-U1 = DATA.ws1; % this is the velocity at 1m
+U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
 
-U2_1 = U1 * log(z_snow/zo_1)/log(z_given/zo_1);
+U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
-U2_2 = U1 * log(z_snow/zo_2)/log(z_given/zo_2);
-U2_2 = U1; % its already extrapolated
+U2_2 = U1 % using 10m windspeed for this parametrization. 
 
 diff = U2_2 - U2_1
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
@@ -92,11 +89,10 @@ uncertainty_of_mean = [];
 
 %calculate mean diameter 
 N_a = DATA.N;
-dp_a = DATA_2.dp_bins(:,3);
+dp_a = DATA.dp_bins(:,3);
 dp_mean = zeros(length(N_a),1);
 sum_a = 0;
 sum_b = 0;
-
 for i=1:length(N_a)
     for j = 1:length(dp_a)
         sum_a = sum_a+N_a(i,j)*dp_a(j);
@@ -107,7 +103,7 @@ for i=1:length(N_a)
     sum_b = 0;
 end 
 
-dp_mean_arr = [];
+dp_mean_arr = []
 dp_25_arr = []
 dp_75_arr = []
 
@@ -131,8 +127,8 @@ for i = 1:(length(velocity_bins)-1)
     % diamond dust #2 observed at 30/07/13 9:15
     % t1 = datenum('30-Jul-2013 7:30'); t2 = datenum('30-Jul-2013 10:30');
     %% x-data: 64 SPC particle size bins
-    x = DATA_2.dp_bins(:,3)'; % dp in micron
-    binWidth = DATA_2.dp_bins(:,4)'; % binwidth in micron
+    x = DATA.dp_bins(:,3)'; % dp in micron
+    binWidth = DATA.dp_bins(:,4)'; % binwidth in micron
     % remove bottom & top bin of spc number densities because spurious particle detection
     x(1) = []; x(end) = [];
     binWidth(1) = []; binWidth(end) = [];
@@ -249,7 +245,7 @@ xlabel('Velocity bins (m/s)','fontsize',18)
 ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
 
-poly_order = 1;
+poly_order = 3;
 alpha_error = zeros(poly_order,2);
 beta_error = zeros(poly_order,2);
 all_error = zeros(poly_order,4);
@@ -314,7 +310,6 @@ hold on
 plot(xtemp,alpha_fit_val, 'b.-','linewidth', 3)
 hold on
 ylabel('Alpha', 'fontsize', 18)
-set(gca,'YScale','log')
 %plot(xtemp,alpha_fit_val+2*std1,'r--',xtemp,alpha_fit_val-2*std1,'r--')
 %hold on
 
@@ -325,10 +320,10 @@ plot(xtemp,beta_fit_val, 'r.-','linewidth', 3)
 hold on
 %plot(xtemp,beta_fit_val+2*std2,'b--',xtemp,beta_fit_val-2*std2,'b--')
 %hold on
-set(gca,'YScale','log')
-xlabel('U1m (m/s)','fontsize',18)
+%set(gca,'YScale','log')
+xlabel('U8cm (m/s)','fontsize',18)
 ylabel('Beta', 'fontsize', 18)
-title('(Alpha & Beta) vs 1m windspeed', 'fontsize', 20)
+title('(Alpha & Beta) vs Surface windspeed', 'fontsize', 20)
 %title('alpha and beta vs ')
 %legend({'Alpha','Alpha fit','Beta','Beta fit'},'fontsize',14)
 
@@ -364,11 +359,11 @@ figure(9)
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
-set(gca,'YScale','log')
-xlabel('U1m (m/s)','fontsize',20)
+%set(gca,'YScale','log')
+xlabel('U8cm (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Mean Diamter (\mum) vs 1m windspeed (m/s)','fontsize',18)
+title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
@@ -383,7 +378,7 @@ p1.FaceAlpha = 0.3;
 %finding when the campaign happened 
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
-store_month = [];
+store_month = []
 
 for i = 1:length(a1)
    %store_month = [store_month str2num(a1(i,1:2))]; % this is the line for month 
@@ -392,6 +387,38 @@ end
 
 figure(10)
 plot(store_month,store_month)
+
+%%%%%%%%%%%%%%%%%%%%%
+
+density = DATA.MU;
+
+
+
+%n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
+m = find(density<=0.0001 & ~isnan(density) & ~isnan(U2_2));
+figure(11)
+%plot(U2_2(~isnan(density)),density(~isnan(density)),'r*')
+plot(U2_2(m),density(m),'r.')
+xlabel('U8cm (m/s)','fontsize',20)
+ylabel('Drift density (kg/m3)','fontsize',20)
+title('Drift density (kg/m3) vs U8cm (m/s)','fontsize',18)
+
+figure(12)
+
+vbin = 0:1:9;
+vbin_2 = 0.5:1:8.5;
+num_points_2 = []
+for i=1:(length(vbin)-1);
+    p = find(U2_2(m)>vbin(i) & U2_2(m)<vbin(i+1));
+    num_points_2 = [num_points_2 length(p)];
+
+end
+
+
+bar(vbin_2,num_points_2)
+title('Number of data points vs windspeed','fontsize',20);
+xlabel('U8cm','fontsize',18);
+ylabel('Number of data points','fontsize',18);
 
 
 
@@ -423,9 +450,7 @@ plot(t_org,Temp_series)
 title('Temperature vs Time','fontsize',14)
 xlabel('Time','fontsize',14)
 ylabel('Temperature (C)','fontsize',14)
-
 %}
-
 
 
 %{

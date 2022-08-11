@@ -64,6 +64,8 @@ U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
 
 U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
+U2_2 = U1; 
+
 diff = U2_2 - U2_1;
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
@@ -224,7 +226,7 @@ grid on
 
 time_diff = 0;
 
-figure(2)
+figure(7)
 plot(x, roll_t(x),'b.')
 title('Time vs Index', 'fontsize',20)
 xlabel('Index','FontSize',18)
@@ -272,7 +274,7 @@ Ut0 = 6.975;
 Ut = Ut0 + 0.0033.*(T_fine+27.27).^2;
 
 delta = std(Ut);
-
+figure(2)
 plot(T_fine,Ut,'r-','LineWidth',2)
 hold on
 plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
@@ -308,14 +310,17 @@ for i=1:(length(T_bins)-1)
 
 end
 
+
+
+
 figure(4)
 
 plot(T_fine,Ut,'r-','LineWidth',2)
 hold on
 plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
 plot(mean_Tbin,mean_vel_zero,'b.','MarkerSize',20)
-title('U10m vs T_skin','Fontsize',20)
-xlabel('T_skin (C)','FontSize',18)
+title('U10m vs T_{skin}','Fontsize',20)
+xlabel('T_{skin} (C)','FontSize',18)
 ylabel('U10m (m/s)','FontSize',18)
 
 
@@ -336,20 +341,9 @@ p1 = patch([mean_Tbin fliplr(mean_Tbin)], [vel25 fliplr(vel75)], 'k');
 %p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
 p1.FaceAlpha = 0.3;
 
-
-
-
-
-%p1 = patch([mean_Tbin fliplr(mean_Tbin)], [vel25 fliplr(vel75)], 'b')
-
-%p1.FaceAlpha = 0.3;
-
-
 title('U10m vs T','Fontsize',20)
 xlabel('T(C)','FontSize',18)
 ylabel('U_{10m} (m/s)','FontSize',18)
-
-
 
 figure(6)
 new_t_noaa = datetime(datestr(t_noaa));

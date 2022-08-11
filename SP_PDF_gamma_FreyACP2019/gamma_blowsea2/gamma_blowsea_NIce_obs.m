@@ -13,12 +13,12 @@ clc
 
 %% load blowsea data
 %pth = '~/Documents/research/Antarctica/BLOWSEA/DATA/SPC/data/';      % path from HERE to data
-pth_2 = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/' % new path for data files
-pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/N-ICE/data/' % PATH FOR NIce
+pth_2 = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/'; % new path for data files
+pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/N-ICE/data/'; % PATH FOR NIce
 fname_2 = sprintf('%sU1104_8cm_1min.mat',pth_2);
 fname = sprintf('%sSPC_ice_1min.mat',pth); %surface data for NIce campaign 
 DATA = load(fname);
-DATA_2 = load(fname_2)
+DATA_2 = load(fname_2);
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
@@ -28,23 +28,23 @@ t2 = datenum('14-Jul-2013 23:26'); % this statement is not read in
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
 
-velocity_bins = [0,5,10,15,20,25,30]
-velocity_bins = [0,5,10]
-velocity_bins = [0,2,4,6,8,10,12,14]
+velocity_bins = [0,5,10,15,20,25,30];
+velocity_bins = [0,5,10];
+velocity_bins = [0,2,4,6,8,10,12,14];
 velocity_bins = (4:0.2:10);
 velocity_bins = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (3.75:0.5:10.25);
-new_v_vector  = (4:0.5:10)
+new_v_vector  = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (-0.25:0.5:10.25);
-new_v_vector  = (0:0.5:10)
+new_v_vector  = (0:0.5:10);
 
 % new block of code to automate velocity_bins and new_v_vector 
 velocity_bins = (1:0.1:13.5);
-new_v_vector = []
+new_v_vector = [];
 
 
 
