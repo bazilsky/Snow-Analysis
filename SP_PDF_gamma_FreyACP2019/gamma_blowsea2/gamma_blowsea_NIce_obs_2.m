@@ -18,7 +18,7 @@ pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/N-ICE/data/'; % PATH FOR NIce
 fname_2 = sprintf('%sU1104_8cm_1min.mat',pth_2);
 fname = sprintf('%sSPC_ice_1min.mat',pth); %surface data for NIce campaign 
 DATA = load(fname);
-DATA_2 = load(fname_2)
+DATA_2 = load(fname_2);
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
@@ -28,22 +28,22 @@ t2 = datenum('14-Jul-2013 23:26'); % this statement is not read in
 % snowfall only #1 observed 3/7/13 15:00, 4/7/13 0:05 & 6:15
 % t1 = datenum('3-Jul-2013 14:30'); t2 = datenum('4-Jul-2013 7:00'); % Nsum of SPC-crw & SPC-ice look similar
 
-velocity_bins = [0,5,10,15,20,25,30]
-velocity_bins = [0,5,10]
+velocity_bins = [0,5,10,15,20,25,30];
+velocity_bins = [0,5,10];
 velocity_bins = [0,2,4,6,8,10,12,14]
 velocity_bins = (4:0.2:10);
 velocity_bins = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (3.75:0.5:10.25);
-new_v_vector  = (4:0.5:10)
+new_v_vector  = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (-0.25:0.5:10.25);
-new_v_vector  = (0:0.5:10)
+new_v_vector  = (0:0.5:10);
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (2:0.1:13.5);
+velocity_bins = (7.5:0.1:20);
 new_v_vector = []
 
 
@@ -57,15 +57,15 @@ end
 zo_1 = 5.6e-5; 
 zo_2 = 2.3e-4;
 
-z_snow = 0.5 %calculate the 8cm wind speed 
+z_snow = 10 %calculate the 10m wind speed 
 z_given = 23 % 23 m data is the given wind speed (U1)
 
 U1 = DATA.ws1; % this is the velocity at 1m
 
 U2_1 = U1 * log(z_snow/zo_1)/log(z_given/zo_1);
 
-U2_2 = U1 * log(z_snow/zo_2)/log(z_given/zo_2);
-U2_2 = U1; % its already extrapolated
+U2_2 = U1 * log(z_snow/zo_2)/log(z_given/zo_2); % evaluation of the 10m windspeed that is used 
+
 
 diff = U2_2 - U2_1
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
@@ -361,14 +361,28 @@ ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
+ydots = 0:1:370
+ut = 7.5;  % Thresold windspeed for the mosaic campaign
+xdots = zeros(length(ydots),1);
+xdots(:) = ut;
+
+% new parametrisation 
+alpha_mosaic = -0.0316*new_v_vector+2.3736;
+beta_mosaic  = 2.6376*new_v_vector + 27.5125;
+
+param_diameter = alpha_mosaic.*beta_mosaic
+
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
+plot(xdots,ydots,'k--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
-set(gca,'YScale','log')
-xlabel('U1m (m/s)','fontsize',20)
+
+%set(gca,'YScale','log')
+xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Mean Diamter (\mum) vs 1m windspeed (m/s)','fontsize',18)
+title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - NIce','fontsize',18)
+ylim([50,300]);
 hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
@@ -379,6 +393,8 @@ plot(new_v_vector,dp_25_arr,'k-')
 plot(new_v_vector,dp_75_arr,'k-')
 p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
 p1.FaceAlpha = 0.3;
+
+plot(new_v_vector, param_diameter,'r--','linewidth',1.5)
 
 %finding when the campaign happened 
 

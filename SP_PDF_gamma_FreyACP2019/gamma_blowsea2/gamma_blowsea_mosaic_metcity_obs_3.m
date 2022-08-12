@@ -40,7 +40,7 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (1:0.1:15);
+velocity_bins = (8:0.1:15);
 new_v_vector = []
 
 
@@ -245,7 +245,7 @@ xlabel('Velocity bins (m/s)','fontsize',18)
 ylabel('alpha*beta', 'fontsize', 18)
 title('Mean diameter (microns) vs windspeed', 'fontsize', 20)
 
-poly_order = 3;
+poly_order = 1;
 alpha_error = zeros(poly_order,2);
 beta_error = zeros(poly_order,2);
 all_error = zeros(poly_order,4);
@@ -363,11 +363,11 @@ xdots(:) = ut;
 
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
-plot(xdots,ydots,'k--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
+%plot(xdots,ydots,'k--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
 %set(gca,'YScale','log')
 xlabel('U10m (m/s)','fontsize',20)
-ylim([0 350])
+%ylim([0 210])
 
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum) (surface SPC)','fontsize',20)

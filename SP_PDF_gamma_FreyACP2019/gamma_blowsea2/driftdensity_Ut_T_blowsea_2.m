@@ -197,8 +197,6 @@ for i=1:(length(T_bins)-1)
         %mean_Tbin_2m = [mean_Tbin_2m nanmean(T_noaa_2m_2(a))];
         vel25  = [vel25 prctile(vel_zero(a),25)];
         vel75  = [vel75 prctile(vel_zero(a),75)];
-        
-
     end
 
 end
