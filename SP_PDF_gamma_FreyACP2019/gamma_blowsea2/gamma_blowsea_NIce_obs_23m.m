@@ -16,7 +16,8 @@ clc
 pth_2 = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/'; % new path for data files
 pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/N-ICE/data/'; % PATH FOR NIce
 fname_2 = sprintf('%sU1104_8cm_1min.mat',pth_2);
-fname = sprintf('%sSPC_ice_1min.mat',pth); %surface data for NIce campaign 
+%fname = sprintf('%sSPC_ice_1min.mat',pth); % surface data for NIce campaign 
+fname = sprintf('%sSPC_crow_1min.mat',pth); % measurements at 23m 
 DATA = load(fname);
 DATA_2 = load(fname_2)
 
@@ -36,15 +37,15 @@ velocity_bins = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (3.75:0.5:10.25);
-new_v_vector  = (4:0.5:10)
+new_v_vector  = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (-0.25:0.5:10.25);
-new_v_vector  = (0:0.5:10)
+new_v_vector  = (0:0.5:10);
 
 % new block of code to automate velocity_bins and new_v_vector 
 velocity_bins = (2:0.1:13.5);
-new_v_vector = []
+new_v_vector = [];
 
 
 
@@ -60,7 +61,7 @@ zo_2 = 2.3e-4;
 z_snow = 0.5 %calculate the 8cm wind speed 
 z_given = 23 % 23 m data is the given wind speed (U1)
 
-U1 = DATA.ws1; % this is the velocity at 1m
+U1 = DATA.ws1; % this is the velocity at 23m
 
 U2_1 = U1 * log(z_snow/zo_1)/log(z_given/zo_1);
 
@@ -365,10 +366,10 @@ figure(9)
 hold on 
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
 set(gca,'YScale','log')
-xlabel('U1m (m/s)','fontsize',20)
+xlabel('U23m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Mean Diamter (\mum) vs 1m windspeed (m/s)','fontsize',18)
+title('Mean Diamter (\mum) vs 23m windspeed (m/s)','fontsize',18)
 hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
@@ -392,8 +393,6 @@ end
 
 figure(10)
 plot(store_month,store_month)
-
-
 
 %{
 figure(7)
