@@ -374,7 +374,7 @@ param_diameter = alpha_mosaic.*beta_mosaic;
 
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
-plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
+plot(xdots,ydots,'k--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
 %scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
 
 %set(gca,'YScale','log')
@@ -383,22 +383,21 @@ xlabel('U10m (m/s)','fontsize',20)
 ylabel('Mean Diameter (\mum)','fontsize',20)
 title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - NIce','fontsize',18)
 ylim([50,300]);
-%hcb = colorbar
-%hcb.Title.String = "Number of data points"
-%hcb.FontSize = 12
+hcb = colorbar
+hcb.Title.String = "Number of data points"
+hcb.FontSize = 12
 
 hold all 
 plot(new_v_vector,dp_mean_arr,'k.-','linewidth',2)
-p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
-p1.FaceAlpha = 0.3;
 plot(new_v_vector, param_diameter,'r--','linewidth',2)
-
 plot(new_v_vector,dp_25_arr,'k-')
 plot(new_v_vector,dp_75_arr,'k-')
+p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
+p1.FaceAlpha = 0.3;
 
-
-%plot(new_v_vector, param_diameter,'r--','linewidth',2)
-lgd = legend({'Threshold windspeed','Obs mean','Obs Interquartile range','Mean diamter from MOSAIC parametrisation'},'Fontsize',14)
+plot(new_v_vector, param_diameter,'r--','linewidth',2)
+lgd = legend({'Threshold windspeObs 25th percentile','Obs 75th percentile', ...
+    'Mean diamter from MOSAIC parametrisation'},'Fontsize',14)
 %finding when the campaign happened 
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');

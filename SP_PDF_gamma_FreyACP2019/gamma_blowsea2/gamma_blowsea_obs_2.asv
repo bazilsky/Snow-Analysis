@@ -15,6 +15,8 @@ clc
 %pth = '~/Documents/research/Antarctica/BLOWSEA/DATA/SPC/data/';      % path from HERE to data
 pth_2 = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/'; % new path for data files
 pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/N-ICE/data/'; % PATH FOR NIce
+pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/blowsea/SPC/data/'; % PATH for weddell sea data
+
 fname_2 = sprintf('%sU1104_8cm_1min.mat',pth_2);
 fname = sprintf('%sSPC_ice_1min.mat',pth); %surface data for NIce campaign 
 DATA = load(fname);
@@ -60,14 +62,15 @@ zo_2 = 2.3e-4;
 z_snow = 10 %calculate the 10m wind speed 
 z_given = 23 % 23 m data is the given wind speed (U1)
 
-U1 = DATA.ws1; % this is the velocity at 1m
+U1 = DATA.U10m; % this is the velocity at 1m
 
 U2_1 = U1 * log(z_snow/zo_1)/log(z_given/zo_1);
 
 U2_2 = U1 * log(z_snow/zo_2)/log(z_given/zo_2); % evaluation of the 10m windspeed that is used 
 
+U2_2 = U1; % 10m windspeed is already in the data file
 
-diff = U2_2 - U2_1
+diff = U2_2 - U2_1;
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
 figure(2)
@@ -124,7 +127,7 @@ for i = 1:(length(velocity_bins)-1)
     num_points = [num_points length(n)];
 
     nonnan_count = nnz(~isnan(DATA.N(n)));
-    uncertainty_of_mean = [uncertainty_of_mean nanstd(DATA.N(n))/sqrt(nonnan_count)]
+    uncertainty_of_mean = [uncertainty_of_mean nanstd(DATA.N(n))/sqrt(nonnan_count)];
     % 2) example diamond dust/ snow crystals
     % diamond dust #1 observed at 29/07/13 21:38
     % t1 = datenum('29-Jul-2013 20:00'); t2 = datenum('29-Jul-2013 23:00');
@@ -140,7 +143,7 @@ for i = 1:(length(velocity_bins)-1)
 %% y-data (pdf) & other
 %  average if more than one line
     N = nanmean(DATA.N(n,:),1);
-    T = nanmean(DATA.T(n,:),1);
+    T = nanmean(DATA.T29m(n,:),1);
     dp_mean_obs = nanmean(dp_mean(n,:),1);
     dp_25_obs   = prctile(dp_mean(n,:),25);
     dp_75_obs   = prctile(dp_mean(n,:),75); 
@@ -362,7 +365,7 @@ title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
 ydots = 0:1:370
-ut = 7.5;  % Thresold windspeed for the mosaic campaign
+ut = 4.9;  % Thresold windspeed for the weddell sea .. blowsea camp
 xdots = zeros(length(ydots),1);
 xdots(:) = ut;
 
@@ -381,21 +384,28 @@ plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the 
 xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - NIce','fontsize',18)
+title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - Weddell Sea','fontsize',18)
 ylim([50,300]);
-%hcb = colorbar
-%hcb.Title.String = "Number of data points"
-%hcb.FontSize = 12
+%hcb = colorbar;
+%hcb.Title.String = "Number of data points";
+%hcb.FontSize = 12;
 
 hold all 
-plot(new_v_vector,dp_mean_arr,'k.-','linewidth',2)
-p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
-p1.FaceAlpha = 0.3;
+
+e = find(~isnan(dp_mean_arr));
+new_v_vector_2 = new_v_vector(e);
+dp_mean_arr_2 = dp_mean_arr(e);
+dp_25_arr_2 = dp_25_arr(e);
+dp_75_arr_2 = dp_75_arr(e);
+
+
+plot(new_v_vector_2,dp_mean_arr_2,'k.-','linewidth',2)
+p1 = patch([new_v_vector_2 fliplr(new_v_vector_2)], [dp_25_arr_2 fliplr(dp_75_arr_2)], 'k')
+p1.FaceAlpha = 0.5;
 plot(new_v_vector, param_diameter,'r--','linewidth',2)
 
-plot(new_v_vector,dp_25_arr,'k-')
-plot(new_v_vector,dp_75_arr,'k-')
-
+plot(new_v_vector_2,dp_25_arr_2,'k-')
+plot(new_v_vector_2,dp_75_arr_2,'k-')
 
 %plot(new_v_vector, param_diameter,'r--','linewidth',2)
 lgd = legend({'Threshold windspeed','Obs mean','Obs Interquartile range','Mean diamter from MOSAIC parametrisation'},'Fontsize',14)
