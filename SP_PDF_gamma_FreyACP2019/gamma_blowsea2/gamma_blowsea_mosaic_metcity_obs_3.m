@@ -249,8 +249,11 @@ poly_order = 1;
 alpha_error = zeros(poly_order,2);
 beta_error = zeros(poly_order,2);
 all_error = zeros(poly_order,4);
-% polynomial fit to data 
+% polynomial fit to data
+
+
 for k=1:poly_order
+    
     velocity_fit_data = new_v_vector(1:2:end);
     alpha_fit_data = alpha(1:2:end);
     beta_fit_data = beta(1:2:end);
@@ -279,8 +282,8 @@ for k=1:poly_order
     beta_error(k,1) = beta_fit_error
     beta_error(k,2) = beta_test_error
     
-
 end
+
 
 all_error = [alpha_error beta_error]
 writematrix(all_error,'mosaic_alphabeta_error.csv')
@@ -364,7 +367,7 @@ xdots(:) = ut;
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
 %plot(xdots,ydots,'k--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
-scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
+
 %set(gca,'YScale','log')
 xlabel('U10m (m/s)','fontsize',20)
 %ylim([0 210])
@@ -372,18 +375,27 @@ xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum) (surface SPC)','fontsize',20)
 title('Mean Diamter at surface (\mum) vs U10m (m/s) - MOSAIC','fontsize',18)
+
+
+hold on
+plot(new_v_vector,dp_mean_arr,'k.-','linewidth',2)
+
+p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
+p1.FaceAlpha = 0.3;
+scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
+
+
+
+plot(new_v_vector,dp_25_arr,'k-')
+plot(new_v_vector,dp_75_arr,'k-')
 hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
 
-hold all 
-plot(new_v_vector,dp_mean_arr,'k.-','linewidth',2)
-plot(new_v_vector,dp_25_arr,'k-')
-plot(new_v_vector,dp_75_arr,'k-')
-p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
-p1.FaceAlpha = 0.3;
+lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta'},'FontSize',14)
 
 %finding when the campaign happened 
+
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 store_month = []
@@ -428,48 +440,6 @@ title('Number of data points vs windspeed','fontsize',20);
 xlabel('U8cm','fontsize',18);
 ylabel('Number of data points','fontsize',18);
 
-
-
-%{
-figure(7)
-t_series = datenum(DATA.t);
-t_org = datetime(t_series,'ConvertFrom','datenum');
-
-N_Total = nansum(DATA.N,2);
-U_series = DATA.U5cm;
-dmean_series = nanmean(DATA.SP_data,2);
-Temp_series = DATA.T;
-
-subplot(3,1,1)
-plot(t_org,DATA.N_sum/1e6)
-set(gca,'YScale','log')
-title('Total Aerosol number concentration (/cm3) vs Time','fontsize',14)
-xlabel('Time','fontsize',14)
-ylabel('N_{Total}','fontsize',14)
-
-subplot(3,1,2)
-plot(t_org,U_series)
-title('Wind Velocity vs Time','fontsize',14)
-xlabel('Time','fontsize',14)
-ylabel('U (m/s)','fontsize',14)
-
-subplot(3,1,3)
-plot(t_org,Temp_series)
-title('Temperature vs Time','fontsize',14)
-xlabel('Time','fontsize',14)
-ylabel('Temperature (C)','fontsize',14)
-%}
-
-
-%{
-% single parameter fit .. using xins method 
-figure(6)
-plot(velocity_bins(1:(length(velocity_bins)-1)),alpha_1p, 'r*-','linewidth', 3)
-hold on
-plot(velocity_bins(1:(length(velocity_bins)-1)),beta_1p, 'b*-','linewidth', 3)
-hold on
-set(gca,'YScale','log')
-%}
 
 
 

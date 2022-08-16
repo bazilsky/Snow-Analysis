@@ -366,9 +366,14 @@ ut = 7.5;  % Thresold windspeed for the mosaic campaign
 xdots = zeros(length(ydots),1);
 xdots(:) = ut;
 
-% new parametrisation 
+% old parametrisation 
 alpha_mosaic = -0.0316*new_v_vector+2.3736;
 beta_mosaic  = 2.6376*new_v_vector + 27.5125;
+
+
+% new parametrisation 
+%alpha_mosaic = -0.0955*new_v_vector+3.1592;
+%beta_mosaic  = 3.86*new_v_vector + 11.727;
 
 param_diameter = alpha_mosaic.*beta_mosaic;
 
@@ -398,7 +403,7 @@ plot(new_v_vector,dp_75_arr,'k-')
 
 
 %plot(new_v_vector, param_diameter,'r--','linewidth',2)
-lgd = legend({'Threshold windspeed','Obs mean','Obs Interquartile range','Mean diamter from MOSAIC parametrisation'},'Fontsize',14)
+lgd = legend({'Threshold windspeed','Obs mean','Obs Interquartile range','Mean diameter from MOSAIC parametrisation'},'Fontsize',14)
 %finding when the campaign happened 
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
