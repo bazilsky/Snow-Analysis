@@ -36,13 +36,15 @@ t_precip = t_PWDM1(precip_filter);
 
 t_org = datetime(datestr(DATA.t));
 
-ismem = ismember(t_org,t_precip); % ~ismim is the filter for taking out precipitation values
+ismem = ismember(t_org,t_precip); 
 
 t_org_2 = t_org(~ismem);
+
 
 plot(t_PWDM1,PWDM1,'r.')
 
 new_time_array = [];
+
 
 % 
 % for i=1:size(t_no_precip)
@@ -96,7 +98,7 @@ end
 zo_1 = 5.6e-5; 
 zo_2 = 2.3e-4;
 
-U1 = DATA.U10m_ex(~ismem);
+U1 = DATA.U10m_ex;
 
 U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
 
@@ -105,9 +107,6 @@ U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 U2_2 = U1 % using 10m windspeed for this parametrization. 
 
 diff = U2_2 - U2_1
-
-DATA.t = DATA.t(~ismem)
-
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
 figure(2)
@@ -131,8 +130,8 @@ Nsum_array = [];
 uncertainty_of_mean = [];
 
 %calculate mean diameter 
-N_a = DATA.N(~ismem);
-dp_a = DATA.dp_bins(:,3);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+N_a = DATA.N;
+dp_a = DATA.dp_bins(:,3);
 dp_mean = zeros(length(N_a),1);
 sum_a = 0;
 sum_b = 0;
