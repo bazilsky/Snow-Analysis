@@ -14,10 +14,56 @@ clc
 %% load blowsea data
 %pth = '~/Documents/research/Antarctica/BLOWSEA/DATA/SPC/data/';      % path from HERE to data
 pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/' % new path for data files
+precip_path = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/precip/precipitation_Wagner_May2022/' % path for the precipitation files
 fname = sprintf('%sU1104_8cm_1min.mat',pth);
 fname2 = sprintf('%stower_NOAA_1min.mat',pth);
+precip_fname = sprintf('PWDM1_leg1_3.mat',precip_path);
+kazr_fname = sprintf('KAZR_derivedS_matrosov_1h.mat',precip_path);
 DATA = load(fname);
 DATA2 = load(fname2);
+
+% THIS IS THE PRECIPITATION DATA 
+PWDM1 = load(precip_fname);
+PWDM1 = sortrows([datenum(PWDM1.DateTimeUTC),PWDM1.precip_ratemmhr],1);
+t_PWDM1 = datetime(datestr(PWDM1(:,1)));
+PWDM1 = PWDM1(:,2);
+
+KAZR = load(kazr_fname);
+
+precip_filter = find(PWDM1~=0); % time when there is precipitation
+t_precip = t_PWDM1(precip_filter);
+t_org = datetime(datestr(DATA.t));
+
+ismem_1 = ismember(t_org,t_precip); % ~ismim is the filter for taking out precipitation values
+ 
+plot(t_PWDM1,PWDM1,'r.')
+
+kazr_time = datetime(datestr(KAZR.Time));
+kazr_filter1 = find(KAZR.VarName3~=0);
+t_kazr1 = kazr_time
+
+ismem_2 = ismember(t_org,kazr_time); % check kazr data
+
+% ismem_3 = ismem_1 + ismem_2;
+ismem_3 = ismem_1; % for now I have not included the KAZR data
+ismem = changem(ismem_3,1,2);
+
+%ismem(ismem>1) == 1;
+
+figure(1)
+plot(kazr_time, KAZR.VarName3,'b.','MarkerSize',10);
+hold on
+plot(kazr_time, KAZR.VarName4,'r.','MarkerSize',10);
+plot(kazr_time, KAZR.VarName5,'g.','MarkerSize',10);
+title('KAZIR preciptation data time series','FontSize',20)
+xlabel('Time','FontSize',18)
+ylabel('Snowfall rate','FontSize',18)
+lgd = legend({'Kazr varname3','Kazr varname4','Kazr varname5'},FontSize=12)
+set(gca,'YScale','log');
+grid on
+
+
+
 
 %% select period of interest
 % 1) example BSn at 0.2 & 29m (IS5)
@@ -58,7 +104,7 @@ end
 zo_1 = 5.6e-5; 
 zo_2 = 2.3e-4;
 
-U1 = DATA.U10m_ex;
+U1 = DATA.U10m_ex(~ismem);
 
 U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
 
@@ -66,19 +112,16 @@ U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
 U2_2 = U1; 
 
+DATA.t = DATA.t(~ismem);  % altering main time variable
+
 diff = U2_2 - U2_1;
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
 
-
-
 %U2 = U1 * log(z2/z0) / log (z1/z0)
 %%
 
-
-
 %legend(str_temp)
-
 
 %finding when the campaign happened 
 
@@ -90,9 +133,10 @@ for i = 1:length(a1)
    store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
 end
 
-
-
 %%%%%%%%%%%%%%%%%%%%%
+
+DATA.MU = DATA.MU(~ismem)
+
 
 avg_bin = 10;
 
@@ -122,7 +166,7 @@ end
 
 %movmean(DATA2.tower_NOAA.t,60),movmean(DATA2.tower_NOAA.skin_temp_surface;
 
-Temp_avg = movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin);
+Temp_avg = movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin); 
 
 tslice_2 = time_avg(q);
 density_slice_2 = density(q);
@@ -151,9 +195,6 @@ T_noaa_skin = movmean(DATA2.tower_NOAA.skin_temp_surface,avg_bin);
 T_noaa_2m = movmean(DATA2.tower_NOAA.temp_2m,avg_bin);
 
 t_filter = find(t_noaa>733750);
-
-
-
 
 diff_min = 0.00002;
 
@@ -250,19 +291,22 @@ t_noaa_4 = [];
 sample = [];
 T_noaa_skin_2 = [];
 T_noaa_2m_2 = [];
+new_vel_zero = [];
 
 for i = 1:length(time_zero)
     
     qw = find(t_noaa_3 == time_zero(i));
-    if length(qw) == 0
+    if length(qw) ~= 0
         sample = [sample i];
-    end
+    
 
     t_noaa_4 =[t_noaa_4 t_noaa_3(qw)];
     T_noaa_skin_2 = [T_noaa_skin_2 T_noaa_skin(qw)];
     T_noaa_2m_2 = [T_noaa_2m_2 T_noaa_2m(qw)];
+    new_vel_zero = [new_vel_zero vel_zero(i)]; % new vel zero vector added
     count = [count qw];
     counter = counter + 1;
+    end 
 
 end
 
@@ -326,24 +370,21 @@ ylabel('U10m (m/s)','FontSize',18)
 
 figure(5)
 plot(mean_Tbin,mean_vel_zero,'b','LineWidth',2)
-
-
 hold on
-%plot(mean_Tbin_2m,mean_vel_zero,'g','LineWidth',2)
+plot(mean_Tbin_2m,mean_vel_zero,'g','LineWidth',2)
 plot(T_fine,Ut,'r-','LineWidth',2)
 
 plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
 
 plot(mean_Tbin,vel25,'b','LineWidth',1)
 plot(mean_Tbin,vel75,'b','LineWidth',1)
-% lgd = legend({'U_{10m} vs T_{skin}','U_{10m} vs T_{2m}'},'FontSize',14)
+lgd = legend({'U_{10m} vs T_{skin}','U_{10m} vs T_{2m}'},'FontSize',14)
 
 p1 = patch([mean_Tbin fliplr(mean_Tbin)], [vel25 fliplr(vel75)], 'k');
 
 %p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
 p1.FaceAlpha = 0.3;
 
-lgd = legend({'U_{10m} vs T_{skin}'},'FontSize',14)
 title('U10m vs T','Fontsize',20)
 xlabel('T(C)','FontSize',18)
 ylabel('U_{10m} (m/s)','FontSize',18)

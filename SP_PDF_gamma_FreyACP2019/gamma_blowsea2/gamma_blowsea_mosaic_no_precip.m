@@ -16,9 +16,13 @@ clc
 pth = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/' % new path for data files
 precip_path = '/Users/ananth/Desktop/bas_scripts/DATA_SETS/mosaic/newdata_with_metcity/precip/precipitation_Wagner_May2022/' % path for the precipitation files
 
+
+
+
 fname = sprintf('%sU1104_8cm_1min.mat',pth);
 
 precip_fname = sprintf('PWDM1_leg1_3.mat',precip_path)
+kazr_fname   = sprintf('KAZR_derivedS_matrosov_1h.mat',precip_path)
 
 
 DATA = load(fname);
@@ -29,18 +33,32 @@ PWDM1 = sortrows([datenum(PWDM1.DateTimeUTC),PWDM1.precip_ratemmhr],1);
 t_PWDM1 = datetime(datestr(PWDM1(:,1)));
 PWDM1 = PWDM1(:,2);
 
+KAZR = load(kazr_fname);
 
 
-precip_filter = find(PWDM1==0);
+precip_filter = find(PWDM1~=0); % time when there is precipitation
 t_precip = t_PWDM1(precip_filter);
 
 t_org = datetime(datestr(DATA.t));
 
-ismem = ismember(t_org,t_precip); % ~ismim is the filter for taking out precipitation values
-
-t_org_2 = t_org(~ismem);
-
+ismem_1 = ismember(t_org,t_precip); % ~ismim is the filter for taking out precipitation values
+ 
 plot(t_PWDM1,PWDM1,'r.')
+
+
+kazr_time = datetime(datestr(KAZR.Time));
+ismem_2 = ismember(t_org,kazr_time); % check kazr data
+
+% ismem_3 = ismem_1 + ismem_2;
+
+ismem_3 = ismem_1; % correct ismem_2 later
+
+ismem = changem(ismem_3,1,2);
+
+%ismem(ismem>1) == 1;
+
+hold on
+plot(kazr_time, KAZR.VarName4,'b-');
 
 new_time_array = [];
 
@@ -54,7 +72,6 @@ new_time_array = [];
 %         t_org(time_filter) = [] ;
 %     end
 % end 
-
 
 
 %% select period of interest
@@ -80,9 +97,8 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (8:0.1:15);
+velocity_bins = (1:0.1:15);
 new_v_vector = []
-
 
 for p = 1: length(velocity_bins)-1
     
@@ -90,7 +106,6 @@ for p = 1: length(velocity_bins)-1
     new_v_vector = [new_v_vector vbin_mean];
     
 end
-
 
 %% estimate new 8cm velocity 
 zo_1 = 5.6e-5; 
@@ -102,11 +117,11 @@ U2_1 = U1 * log(8e-2/zo_1)/log(10/zo_1);
 
 U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
-U2_2 = U1 % using 10m windspeed for this parametrization. 
+U2_2 = U1; % using 10m windspeed for this parametrization. 
 
-diff = U2_2 - U2_1
+diff = U2_2 - U2_1;
 
-DATA.t = DATA.t(~ismem)
+DATA.t = DATA.t(~ismem);  % altering main time variable
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 a2 = datetime(a1);
@@ -131,7 +146,7 @@ Nsum_array = [];
 uncertainty_of_mean = [];
 
 %calculate mean diameter 
-N_a = DATA.N(~ismem);
+N_a = DATA.N(~ismem,:);
 dp_a = DATA.dp_bins(:,3);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 dp_mean = zeros(length(N_a),1);
 sum_a = 0;
@@ -146,9 +161,13 @@ for i=1:length(N_a)
     sum_b = 0;
 end 
 
-dp_mean_arr = []
-dp_25_arr = []
-dp_75_arr = []
+dp_mean_arr = [];
+dp_25_arr = [];
+dp_75_arr = [];
+
+DATA.N = DATA.N(~ismem,:);
+DATA.T = DATA.T(~ismem,:);
+DATA.MU = DATA.MU(~ismem,:);
 
 for i = 1:(length(velocity_bins)-1)
 
@@ -163,7 +182,8 @@ for i = 1:(length(velocity_bins)-1)
     num_points = [num_points length(n)];
 
     nonnan_count = nnz(~isnan(DATA.N(n)));
-    uncertainty_of_mean = [uncertainty_of_mean nanstd(DATA.N(n))/sqrt(nonnan_count)]
+    uncertainty_of_mean = [uncertainty_of_mean nanstd(DATA.N(n))/sqrt(nonnan_count)];
+
     % 2) example diamond dust/ snow crystals
     % diamond dust #1 observed at 29/07/13 21:38
     % t1 = datenum('29-Jul-2013 20:00'); t2 = datenum('29-Jul-2013 23:00');
@@ -402,14 +422,14 @@ ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
-ydots = 0:1:370
+ydots = 0:1:400;
 ut = 5.25;  % Thresold windspeed for the mosaic campaign
 xdots = zeros(length(ydots),1);
 xdots(:) = ut;
 
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
-%plot(xdots,ydots,'k--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
+
 
 %set(gca,'YScale','log')
 xlabel('U10m (m/s)','fontsize',20)
@@ -426,6 +446,7 @@ plot(new_v_vector,dp_mean_arr,'k.-','linewidth',2)
 p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
 p1.FaceAlpha = 0.3;
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
+plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
 
 
 
@@ -435,7 +456,8 @@ hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
 
-lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta'},'FontSize',14)
+
+lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta','Thresold windspeed'},'FontSize',14)
 
 %finding when the campaign happened 
 
