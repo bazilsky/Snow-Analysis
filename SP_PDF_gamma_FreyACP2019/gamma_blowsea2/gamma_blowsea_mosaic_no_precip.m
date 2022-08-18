@@ -97,7 +97,7 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (1:0.1:15);
+velocity_bins = (6:0.1:12);
 new_v_vector = []
 
 for p = 1: length(velocity_bins)-1
@@ -446,7 +446,7 @@ plot(new_v_vector,dp_mean_arr,'k.-','linewidth',2)
 p1 = patch([new_v_vector fliplr(new_v_vector)], [dp_25_arr fliplr(dp_75_arr)], 'k')
 p1.FaceAlpha = 0.3;
 scatter(new_v_vector,alpha.*beta,100,num_points,'filled')
-plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
+%plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the thresold windspeed
 
 
 
@@ -457,8 +457,8 @@ hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
 
 
-lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta','Thresold windspeed'},'FontSize',14)
-
+% lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta','Thresold windspeed'},'FontSize',14)
+lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta'},'FontSize',14)
 %finding when the campaign happened 
 
 
