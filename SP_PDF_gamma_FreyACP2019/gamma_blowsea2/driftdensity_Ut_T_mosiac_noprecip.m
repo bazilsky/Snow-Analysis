@@ -275,10 +275,12 @@ ylabel('Time','fontsize',18)
 
 zeros_index = [];
 time_zero = [];
+time_zero_2 = [];
 vel_zero = [];
 for i = 1:(length(x)-1)
     if x(i) ~= (x(i+1)-1)
         zeros_index = [zeros_index x(i+1)]; % these are all the blowing snow events
+        time_zero_2 = [time_zero_2 roll_t];
         time_zero = [time_zero roll_t_3(i+1)];
         vel_zero =  [vel_zero  roll_vel(i+1)];
         
@@ -292,7 +294,7 @@ sample = [];
 T_noaa_skin_2 = [];
 T_noaa_2m_2 = [];
 new_vel_zero = [];
-
+new_time_zero = [];
 for i = 1:length(time_zero)
     
     qw = find(t_noaa_3 == time_zero(i));
@@ -304,6 +306,7 @@ for i = 1:length(time_zero)
     T_noaa_skin_2 = [T_noaa_skin_2 T_noaa_skin(qw)];
     T_noaa_2m_2 = [T_noaa_2m_2 T_noaa_2m(qw)];
     new_vel_zero = [new_vel_zero vel_zero(i)]; % new vel zero vector added
+    new_time_zero = [new_time_zero time_zero_2(i)];
     count = [count qw];
     counter = counter + 1;
     end 
@@ -322,8 +325,13 @@ figure(2)
 plot(T_fine,Ut,'r-','LineWidth',2)
 hold on
 plot(T_fine,Ut+2*delta,'r--',T_fine,Ut-2*delta,'r--')
-plot(T_noaa_skin_2,new_vel_zero,'b.','MarkerSize',20)
+
+scatter(T_noaa_skin_2,new_vel_zero,100,new_time_zero,'filled')
+%plot(T_noaa_skin_2,new_vel_zero,'b.','MarkerSize',20)
 % plot(T_noaa_skin_2,vel_zero,'b.','MarkerSize',20)
+hcb = colorbar
+hcb.Title.String = "Time";
+hcb.FontSize = 12
 title('U10m vs T2m','Fontsize',20)
 xlabel('T_skin (C)','FontSize',18)
 ylabel('U10m (m/s)','FontSize',18)
