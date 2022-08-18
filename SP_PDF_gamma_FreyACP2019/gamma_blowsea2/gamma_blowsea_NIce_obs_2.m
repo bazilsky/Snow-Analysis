@@ -375,6 +375,15 @@ beta_mosaic  = 2.6376*new_v_vector + 27.5125;
 %alpha_mosaic = -0.0955*new_v_vector+3.1592;
 %beta_mosaic  = 3.86*new_v_vector + 11.727;
 
+% % new parametrisation from 6m/s
+% alpha_mosaic = -0.2089*new_v_vector + 4.2029;
+% beta_mosaic  = 7.6586*new_v_vector - 22.1204;
+% 
+% % new parametrisation from 8m/s
+% alpha_mosaic = -0.1920*new_v_vector + 4.0309;
+% beta_mosaic  = 8.5123*new_v_vector - 30.9876;
+
+
 param_diameter = alpha_mosaic.*beta_mosaic;
 
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
