@@ -280,9 +280,9 @@ time_zero_2 = [];
 vel_zero = [];
 
 for i = 1:(length(x)-1)
-    if x(i) ~= (x(i+1)-1) % made a mistake with the drift density
+%     if x(i) ~= (x(i+1)-1) % made a mistake with the drift density
 %     calculation
-%     if (density(x(i)) ~= density(x(i)+5)) && (~isnan(density(x(i)+5)))
+    if (density(x(i)) ~= density(x(i)+5)) && (~isnan(density(x(i)+5)))
         zeros_index = [zeros_index x(i+1)]; % these are all the blowing snow events
         time_zero_2 = [time_zero_2 roll_t];
         time_zero = [time_zero roll_t_3(i+1)];
