@@ -295,6 +295,7 @@ T_noaa_skin_2 = [];
 T_noaa_2m_2 = [];
 new_vel_zero = [];
 new_time_zero = [];
+% new_time_zero = [];
 for i = 1:length(time_zero)
     
     qw = find(t_noaa_3 == time_zero(i));
@@ -307,11 +308,14 @@ for i = 1:length(time_zero)
     T_noaa_2m_2 = [T_noaa_2m_2 T_noaa_2m(qw)];
     new_vel_zero = [new_vel_zero vel_zero(i)]; % new vel zero vector added
     new_time_zero = [new_time_zero time_zero_2(i)];
+%     old
     count = [count qw];
     counter = counter + 1;
     end 
 
 end
+
+new_time_zero_str = datetime(datestr(new_time_zero));
 
 
 T_fine = linspace(-50,10,100);
@@ -335,6 +339,8 @@ hcb.FontSize = 12
 title('U10m vs T2m','Fontsize',20)
 xlabel('T_skin (C)','FontSize',18)
 ylabel('U10m (m/s)','FontSize',18)
+hcb.TickLabels = datestr(new_time_zero_str);
+
 
 T_bins = -50:0.2:10;
 %T_bins = -50:0.2:-49.6
