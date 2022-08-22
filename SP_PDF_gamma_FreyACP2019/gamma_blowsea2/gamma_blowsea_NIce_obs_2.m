@@ -472,5 +472,11 @@ set(gca,'YScale','log')
 %}
 
 
-
+figure(11)
+depth = DATA_2.snow_depth;
+time = datetime(datestr(DATA_2.t_NOAA));
+plot(time,depth,'b.');
+title('Snow depth time series - MOSAIC','FontSize',20)
+xlabel('Time','FontSize',18)
+ylabel('Snow depth','FontSize',18)
 
