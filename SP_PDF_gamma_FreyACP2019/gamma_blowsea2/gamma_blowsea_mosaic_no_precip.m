@@ -97,8 +97,10 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (8:0.1:12);
+velocity_bins = (5.25:0.1:12.05);
+velocity_bins = (5.25:0.1:9);
 new_v_vector = []
+
 
 for p = 1: length(velocity_bins)-1
     
@@ -106,6 +108,8 @@ for p = 1: length(velocity_bins)-1
     new_v_vector = [new_v_vector vbin_mean];
     
 end
+
+
 
 %% estimate new 8cm velocity 
 zo_1 = 5.6e-5; 
@@ -130,9 +134,9 @@ plot(a2,diff,'b*')
 xlabel('Time','fontsize',14);
 ylabel('U8cm difference (m/s)','fontsize',14);
 title('( U8cm @z0 = 2.3e-4 ) - (U8cm @z0 = 5.6e-5)','fontsize', 22);
+
 %U2 = U1 * log(z2/z0) / log (z1/z0)
 %%
-
 
 alpha = [];
 beta  = [];
@@ -152,10 +156,12 @@ dp_mean = zeros(length(N_a),1);
 sum_a = 0;
 sum_b = 0;
 for i=1:length(N_a)
+    
     for j = 1:length(dp_a)
-        sum_a = sum_a+N_a(i,j)*dp_a(j);
-        sum_b = sum_b+N_a(i,j);
+        sum_a = sum_a + N_a(i,j)*dp_a(j);
+        sum_b = sum_b + N_a(i,j);
     end
+    
     dp_mean(i) = sum_a/sum_b;
     sum_a = 0;
     sum_b = 0;
@@ -375,7 +381,7 @@ plot(new_v_vector,alpha, 'b*','linewidth', 3)
 hold on
 plot(xtemp,alpha_fit_val, 'b.-','linewidth', 3)
 hold on
-ylabel('Alpha', 'fontsize', 18)
+ylabel('\alpha', 'fontsize', 18)
 %plot(xtemp,alpha_fit_val+2*std1,'r--',xtemp,alpha_fit_val-2*std1,'r--')
 %hold on
 
@@ -387,9 +393,9 @@ hold on
 %plot(xtemp,beta_fit_val+2*std2,'b--',xtemp,beta_fit_val-2*std2,'b--')
 %hold on
 %set(gca,'YScale','log')
-xlabel('U8cm (m/s)','fontsize',18)
-ylabel('Beta', 'fontsize', 18)
-title('(Alpha & Beta) vs Surface windspeed', 'fontsize', 20)
+xlabel('U10m (m/s)','fontsize',18)
+ylabel('\beta', 'fontsize', 18)
+title('\alpha , \beta vs U10m', 'fontsize', 20)
 %title('alpha and beta vs ')
 %legend({'Alpha','Alpha fit','Beta','Beta fit'},'fontsize',14)
 
@@ -397,8 +403,8 @@ title('(Alpha & Beta) vs Surface windspeed', 'fontsize', 20)
 figure(6)
 plot(new_v_vector,meanT, 'r*-','linewidth', 3)
 xlabel('Velocity bins (m/s)','fontsize',20)
-ylabel('mean Temperture', 'fontsize',20)
-title('mean Temperature vs velocity bins','fontsize',22)
+ylabel('Mean Temperature', 'fontsize',20)
+title('Mean Temperature vs velocity bins','fontsize',22)
 
 
 figure(7)
@@ -422,8 +428,10 @@ ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
-ydots = 0:1:400;
+ydots = 0:1:200; % this is for the length of the vertical line for thresold 
+% windspeed in the plot
 ut = 5.25;  % Thresold windspeed for the mosaic campaign
+%ut = 7.5; % using this for the N-ICE campaign. 
 xdots = zeros(length(ydots),1);
 xdots(:) = ut;
 
@@ -456,18 +464,21 @@ hcb = colorbar
 hcb.Title.String = "Number of data points";
 hcb.FontSize = 12
 
+%lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta','Thresold windspeed'},'FontSize',14)
 
-% lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta','Thresold windspeed'},'FontSize',14)
 lgd = legend({'Obs mean','Obs interquartile range','\alpha \beta'},'FontSize',14)
 %finding when the campaign happened 
-
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 store_month = []
 
 for i = 1:length(a1)
+   
+
    %store_month = [store_month str2num(a1(i,1:2))]; % this is the line for month 
    store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
+
+
 end
 
 figure(10)
@@ -476,11 +487,9 @@ plot(store_month,store_month)
 %%%%%%%%%%%%%%%%%%%%%
 
 density = DATA.MU;
-
-
-
 %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
 m = find(density<=0.0001 & ~isnan(density) & ~isnan(U2_2));
+
 figure(11)
 %plot(U2_2(~isnan(density)),density(~isnan(density)),'r*')
 plot(U2_2(m),density(m),'r.')
@@ -492,20 +501,17 @@ figure(12)
 
 vbin = 0:1:9;
 vbin_2 = 0.5:1:8.5;
-num_points_2 = []
-for i=1:(length(vbin)-1);
+num_points_2 = [];
+
+for i=1:(length(vbin)-1)
+    
     p = find(U2_2(m)>vbin(i) & U2_2(m)<vbin(i+1));
     num_points_2 = [num_points_2 length(p)];
 
 end
 
-
 bar(vbin_2,num_points_2)
 title('Number of data points vs windspeed','fontsize',20);
 xlabel('U8cm','fontsize',18);
 ylabel('Number of data points','fontsize',18);
-
-
-
-
 

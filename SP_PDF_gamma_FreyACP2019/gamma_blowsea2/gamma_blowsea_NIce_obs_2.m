@@ -40,7 +40,7 @@ new_v_vector  = (4:0.5:10);
 
 % both lines are important 
 velocity_bins = (-0.25:0.5:10.25);
-new_v_vector  = (0:0.5:10);
+new_v_vector  = (0.1:0.5:10);
 
 % new block of code to automate velocity_bins and new_v_vector 
 velocity_bins = (1:0.1:20);
@@ -336,7 +336,7 @@ title('(Alpha & Beta) vs 1m windspeed', 'fontsize', 20)
 figure(6)
 plot(new_v_vector,meanT, 'r*-','linewidth', 3)
 xlabel('Velocity bins (m/s)','fontsize',20)
-ylabel('mean Temperture', 'fontsize',20)
+ylabel('mean Temperature', 'fontsize',20)
 title('mean Temperature vs velocity bins','fontsize',22)
 
 
@@ -362,7 +362,7 @@ title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
 ydots = 0:1:370
-ut = 7.5;  % Thresold windspeed for the mosaic campaign
+ut = 7.5;  % Thresold windspeed for the nice campaign 
 xdots = zeros(length(ydots),1);
 xdots(:) = ut;
 
@@ -370,8 +370,94 @@ xdots(:) = ut;
 alpha_mosaic = -0.0316*new_v_vector+2.3736;
 beta_mosaic  = 2.6376*new_v_vector + 27.5125;
 
+% new one when writing paper from the mosaic thresold U
+alpha_mosaic = -0.2287*new_v_vector + 4.38;
+beta_mosaic  = 7.9 * new_v_vector - 22.243; 
 
-% new parametrisation 
+% with Ut = 8m/s
+alpha_mosaic = -0.1743*new_v_vector +3.87;
+beta_mosaic  = 6.6*new_v_vector - 14.7
+
+% with vbins from 8 to 15 
+alpha_mosaic = 0.0265*new_v_vector + 1.9;
+beta_mosaic  = -1.39*new_v_vector + 65.52;
+
+% with bins from 7.5 to 15
+
+alpha_mosaic = 0.0223 * new_v_vector + 2.02;
+beta_mosaic  = -0.93 * new_v_vector + 55.91;
+
+% with bins from 7.5 to 13
+
+alpha_mosaic = -0.108 * new_v_vector + 3.2;
+beta_mosaic  = 3.07 * new_v_vector + 17.69;
+
+% with bins from 5.25 to 12
+
+alpha_mosaic = -0.22 * new_v_vector + 4.3;
+beta_mosaic  = 6.56 * new_v_vector -13.41;
+
+% with bins from 8:0.1:14
+
+alpha_mosaic = -0.0252 * new_v_vector + 2.42;
+beta_mosaic  = 0.4 * new_v_vector + 47.4;
+
+% with bins from 8:0.1:14.5
+
+alpha_mosaic = 0.0172 * new_v_vector + 1.99;
+beta_mosaic  = -1.05 * new_v_vector + 62.07;
+
+% with vbins from 8:0.2:14.5 .. best fit so far 
+
+alpha_mosaic = 0.1 * new_v_vector + 2.05;
+beta_mosaic  = -0.53 * new_v_vector + 55.35;
+
+% with vbins from 8:0.2:12.5
+alpha_mosaic = -0.21 * new_v_vector + 4.15;
+beta_mosaic  = 9.41 * new_v_vector - 40.36;
+
+% with vbins 8:0.2:14
+
+alpha_mosaic = -0.0214 * new_v_vector + 2.36;
+beta_mosaic  = 0.5 * new_v_vector + 44.77;
+
+% vbins = 8:0.1:15
+
+alpha_mosaic = 0.0265 * new_v_vector + 1.9;
+beta_mosaic  = -1.39 * new_v_vector + 65.52;
+
+%vbins = 8:0.2:15
+alpha_mosaic = 0.04 * new_v_vector + 1.744;
+beta_mosaic  = -1.51 * new_v_vector + 65.29;
+
+%vbins = 7:0.2:14.5
+alpha_mosaic = -0.0245 * new_v_vector + 2.5;
+beta_mosaic  = 0.33 * new_v_vector + 44.22;
+
+%vbins = 7:0.1:14.5
+alpha_mosaic = -0.0256 * new_v_vector + 2.52;
+beta_mosaic  = 0.58 * new_v_vector + 42.09;
+
+%vbins = 5.25:0.1:12
+alpha_mosaic = -0.22 * new_v_vector + 4.37
+beta_mosaic  = 7.9 * new_v_vector - 22.24
+
+%vbins = 5.25:0.1:10
+alpha_mosaic = -0.2355 * new_v_vector + 4.44
+beta_mosaic  = 4.88 * new_v_vector - 2.547
+
+%vbins = 5.25 : 0.1 : 9.5
+
+alpha_mosaic = -0.246 * new_v_vector + 4.5
+beta_mosaic  = 5.014 * new_v_vector - 3.44
+
+%vbins = 5.25:0.1:9
+
+alpha_mosaic = -0.259 * new_v_vector + 4.6
+beta_mosaic  = 5.48 * new_v_vector - 6.52
+
+
+% new parametrisation
 %alpha_mosaic = -0.0955*new_v_vector+3.1592;
 %beta_mosaic  = 3.86*new_v_vector + 11.727;
 
@@ -395,7 +481,7 @@ plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the 
 xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - NIce','fontsize',18)
+title('Near surface snow Mean Diameter (\mum) vs 10m windspeed (m/s) - NIce','fontsize',18)
 ylim([50,300]);
 %hcb = colorbar
 %hcb.Title.String = "Number of data points"
@@ -409,7 +495,6 @@ plot(new_v_vector, param_diameter,'r--','linewidth',2)
 
 plot(new_v_vector,dp_25_arr,'k-')
 plot(new_v_vector,dp_75_arr,'k-')
-
 
 %plot(new_v_vector, param_diameter,'r--','linewidth',2)
 lgd = legend({'Threshold windspeed','Obs mean','Obs Interquartile range','Mean diameter from MOSAIC parametrisation'},'Fontsize',14)
@@ -425,8 +510,6 @@ end
 
 figure(10)
 plot(store_month,store_month)
-
-
 
 %{
 figure(7)
@@ -459,18 +542,18 @@ ylabel('Temperature (C)','fontsize',14)
 
 %}
 
-
-
 %{
+
 % single parameter fit .. using xins method 
+
 figure(6)
 plot(velocity_bins(1:(length(velocity_bins)-1)),alpha_1p, 'r*-','linewidth', 3)
 hold on
 plot(velocity_bins(1:(length(velocity_bins)-1)),beta_1p, 'b*-','linewidth', 3)
 hold on
 set(gca,'YScale','log')
-%}
 
+%}
 
 figure(11)
 depth = DATA_2.snow_depth;
@@ -479,4 +562,26 @@ plot(time,depth,'b.');
 title('Snow depth time series - MOSAIC','FontSize',20)
 xlabel('Time','FontSize',18)
 ylabel('Snow depth','FontSize',18)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
