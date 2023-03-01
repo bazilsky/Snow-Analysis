@@ -45,12 +45,12 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10);
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (1:0.1:20);
-new_v_vector = [];
+velocity_bins = (4.7:0.1:15);
+new_v_vector  = [];
 
 for p = 1: length(velocity_bins)-1
     vbin_mean = (velocity_bins(p)+velocity_bins(p+1))/2;
-    new_v_vector = [new_v_vector vbin_mean];
+    new_v_vector = [new_v_vector vbin_mean]; % 
 end
 
 %% estimate new 8cm velocity 
@@ -255,6 +255,7 @@ alpha_error = zeros(poly_order,2);
 beta_error = zeros(poly_order,2);
 all_error = zeros(poly_order,4);
 % polynomial fit to data 
+
 for k=1:poly_order
     velocity_fit_data = new_v_vector(1:2:end);
     alpha_fit_data = alpha(1:2:end);
@@ -284,38 +285,21 @@ for k=1:poly_order
     beta_error(k,1) = beta_fit_error
     beta_error(k,2) = beta_test_error
     
-
 end
 
 all_error = [alpha_error beta_error]
 writematrix(all_error,'mosaic_alphabeta_error.csv')
 
-%{ 
-
-
-% This is the original working code
-alpha_poly = polyfit(velocity_bins(1:(length(velocity_bins)-1)),alpha,4);
-xtemp = min(velocity_bins(1:(length(velocity_bins)-1))):0.1:max(velocity_bins(1:(length(velocity_bins)-1)));
-alpha_fit_val = polyval(alpha_poly,xtemp);
-
-beta_poly = polyfit(velocity_bins(1:(length(velocity_bins)-1)),beta,4);
-xtemp = min(velocity_bins(1:(length(velocity_bins)-1))):0.1:max(velocity_bins(1:(length(velocity_bins)-1)));
-beta_fit_val = polyval(beta_poly,xtemp);
-
-
-%}
-
-
 figure(5)
-
+ax=gca
+ax.FontSize = 18
 yyaxis left
-
 plot(new_v_vector,alpha, 'b*','linewidth', 3)
 hold on
 plot(xtemp,alpha_fit_val, 'b.-','linewidth', 3)
 hold on
 ylabel('Alpha', 'fontsize', 18)
-set(gca,'YScale','log')
+%set(gca,'YScale','log')
 %plot(xtemp,alpha_fit_val+2*std1,'r--',xtemp,alpha_fit_val-2*std1,'r--')
 %hold on
 
@@ -324,14 +308,10 @@ plot(new_v_vector,beta, 'r*','linewidth', 3)
 hold on
 plot(xtemp,beta_fit_val, 'r.-','linewidth', 3)
 hold on
-%plot(xtemp,beta_fit_val+2*std2,'b--',xtemp,beta_fit_val-2*std2,'b--')
-%hold on
-set(gca,'YScale','log')
-xlabel('U1m (m/s)','fontsize',18)
+
+xlabel('U10m (m/s)','fontsize',18)
 ylabel('Beta', 'fontsize', 18)
-title('(Alpha & Beta) vs 1m windspeed', 'fontsize', 20)
-%title('alpha and beta vs ')
-%legend({'Alpha','Alpha fit','Beta','Beta fit'},'fontsize',14)
+title('(Alpha & Beta) vs U10m', 'fontsize', 20)
 
 
 figure(6)
@@ -362,6 +342,8 @@ ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
+ax = gca
+ax.FontSize = 14
 ydots = 0:1:370
 ut = 4.9;  % Thresold windspeed for the weddell sea .. blowsea campaign
 xdots = zeros(length(ydots),1);
@@ -371,7 +353,23 @@ xdots(:) = ut;
 alpha_mosaic = -0.0316*new_v_vector+2.3736;
 beta_mosaic  = 2.6376*new_v_vector + 27.5125;
 
+% wedell parametrisation
+
+
+alpha_wedell = alpha_poly(1) * new_v_vector + alpha_poly(2);
+beta_wedell  = beta_poly(1) * new_v_vector + beta_poly(2);
+
+% this is working and correct
+%alpha_wedell = (alpha_poly(1)+0.025) * new_v_vector + alpha_poly(2);
+%beta_wedell  = (beta_poly(1)) * new_v_vector + beta_poly(2);
+
+% this is working and correct
+alpha_wedell = -0.3357 * new_v_vector + 8.3367;
+beta_wedell  = 3.6814 * new_v_vector - 3.3526;
+
 param_diameter = alpha_mosaic.*beta_mosaic;
+
+param_diameter_wedell = alpha_wedell.*beta_wedell;
 
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
 hold on 
@@ -382,13 +380,14 @@ plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the 
 xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - Weddell Sea','fontsize',18)
-ylim([50,300]);
+title('Near surface snow Mean Diameter (\mum) vs 10m windspeed (m/s) - Weddell Sea','fontsize',18)
+ylim([80,200]);
+
 %hcb = colorbar;
 %hcb.Title.String = "Number of data points";
 %hcb.FontSize = 12;
 
-hold all 
+hold all
 
 e = find(~isnan(dp_mean_arr));
 new_v_vector_2 = new_v_vector(e);
@@ -396,18 +395,18 @@ dp_mean_arr_2 = dp_mean_arr(e);
 dp_25_arr_2 = dp_25_arr(e);
 dp_75_arr_2 = dp_75_arr(e);
 
-
 plot(new_v_vector_2,dp_mean_arr_2,'k.-','linewidth',2)
 p1 = patch([new_v_vector_2 fliplr(new_v_vector_2)], [dp_25_arr_2 fliplr(dp_75_arr_2)], 'k')
 p1.FaceAlpha = 0.5;
 plot(new_v_vector, param_diameter,'r--','linewidth',2)
+plot(new_v_vector,param_diameter_wedell,'m--','linewidth',2)
 
 plot(new_v_vector_2,dp_25_arr_2,'k-')
 plot(new_v_vector_2,dp_75_arr_2,'k-')
 
 %plot(new_v_vector, param_diameter,'r--','linewidth',2)
-lgd = legend({'Threshold windspeed','Obs mean','Obs Interquartile range','Mean diamter from MOSAIC parametrisation'},'Fontsize',14)
-%finding when the campaign happened 
+lgd = legend({'Threshold windspeed','Obs mean','Obs Interquartile range','Mean diamter from MOSAIC parametrisation','Mean diamter from Wedell sea parametrisation'},'Fontsize',14)
+%finding when the campaign happened
 
 a1 = datestr(DATA.t, 'mm/dd/YYYY');
 store_month = [];
