@@ -457,6 +457,12 @@ alpha_mosaic = -0.259 * new_v_vector + 4.6
 beta_mosaic  = 5.48 * new_v_vector - 6.52
 
 
+
+m0 = -0.09644419935410521
+m1 = 3.181151617499895
+alpha_mosaic = m0* new_v_vector + m1
+beta_mosaic = 2.64 * new_v_vector+27.51
+
 % new parametrisation
 %alpha_mosaic = -0.0955*new_v_vector+3.1592;
 %beta_mosaic  = 3.86*new_v_vector + 11.727;

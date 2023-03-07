@@ -446,10 +446,21 @@ beta_mosaic  = 7.9 * new_v_vector - 22.24
 alpha_mosaic = -0.2355 * new_v_vector + 4.44
 beta_mosaic  = 4.88 * new_v_vector - 2.547
 
-%vbins = 5.25 : 0.1:9.5
+%vbins = 5.25 : 0.1 : 9.5
 
 alpha_mosaic = -0.246 * new_v_vector + 4.5
-beta_mosaic  = 4.88 * new_v_vector - 3.44
+beta_mosaic  = 5.014 * new_v_vector - 3.44
+
+%vbins = 5.25:0.1:9
+
+alpha_mosaic = -0.259 * new_v_vector + 4.6
+beta_mosaic  = 5.48 * new_v_vector - 6.52
+
+
+
+m0 = [-0.09644419935410521, 3.181151617499895]
+alpha_mosaic = m0[0]* new_v_vector + m[1]
+beta_mosaic = 27.15
 
 % new parametrisation
 %alpha_mosaic = -0.0955*new_v_vector+3.1592;
@@ -505,8 +516,6 @@ end
 figure(10)
 plot(store_month,store_month)
 
-
-
 %{
 figure(7)
 t_series = datenum(DATA.t);
@@ -550,8 +559,6 @@ hold on
 set(gca,'YScale','log')
 
 %}
-
-
 
 figure(11)
 depth = DATA_2.snow_depth;
