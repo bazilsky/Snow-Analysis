@@ -311,7 +311,8 @@ beta_fit_val = polyval(beta_poly,xtemp);
 
 %}
 
-new_data_copy = [new_v]
+new_data_copy = [new_v_vector',alpha',beta']
+writematrix(new_data_copy,'alpha_beta_1.csv')
 
 
 figure(5)
@@ -369,6 +370,9 @@ ylabel('Number of data points','fontsize',20)
 title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
+
+new_obs_arr = [new_v]
+
 ydots = 0:1:370
 ut = 5.25;  % Thresold windspeed for the mosaic campaign
 xdots = zeros(length(ydots),1);

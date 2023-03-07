@@ -48,7 +48,7 @@ velocity_bins = (-0.25:0.5:10.25);
 new_v_vector  = (0:0.5:10)
 
 % new block of code to automate velocity_bins and new_v_vector 
-velocity_bins = (8:0.1:15);
+velocity_bins = (5.25:0.1:15);
 new_v_vector = []
 
 
