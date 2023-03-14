@@ -194,6 +194,9 @@ for i = 1:(length(velocity_bins)-1)
     str = sprintf('\\alpha %5.2f \\pm %0.2f, \\beta %5.2f \\pm %0.2f, U = %2d-%2d m/s',...
        p_ret(1), ep_ret(1),p_ret(2), ep_ret(2), velocity_bins(i),velocity_bins(i+1));
 
+    str = sprintf('\\alpha %5.2f, \\beta %5.2f , \\alpha\\beta %3.0f \\mum, d_{p} %3.0f \\mum',...
+    p_ret(1),p_ret(2), p_ret(1).*p_ret(2),dp_mean);
+
     %str2 = sprintf('U = %d','%d', velocity_bins(i), velocity_bins(i+1), ' ')
 
     %str = strcat(str2, str)

@@ -71,10 +71,14 @@ p_init = [2.1 70];         % 1st guess for search [shape scale];
 x_fine = (0:0.01:max(x))';       % nice smooth line
 pdf_ret = f_build_2p_gamma(x_fine,p_ret);   % calc the curve
 
-figure(1)   % show it as a bar plot
+figure(1)   %show it as a bar plot
 clf
 str = sprintf('\\alpha %5.2f \\pm %0.2f, \\beta %5.2f \\pm %0.2f, \\alpha\\beta %3.0f \\mum, d_{p} %3.0f \\mum',...
     p_ret(1), ep_ret(1),p_ret(2), ep_ret(2), p_ret(1).*p_ret(2),dp_mean);
+
+str = sprintf('\\alpha %5.2f, \\beta %5.2f , \\alpha\\beta %3.0f \\mum, d_{p} %3.0f \\mum',...
+    p_ret(1),p_ret(2), p_ret(1).*p_ret(2),dp_mean);
+
 title(str,'fontsize',14);
 hold on 
 bar(x,pdf)
