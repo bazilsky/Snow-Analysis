@@ -2,9 +2,25 @@
 clear all
 clc
 
+pth_in = '/Users/ananth/Desktop/clasp_data/';
+%data = load('clasp_all_1min.mat');
 
-data = load('clasp_all_1min.mat');
+% Load CLASP data
+fname = sprintf('%sclasp_all_1min.mat',pth_in);
+if(exist(fname,'file') == 0)
+    sprintf('ERROR: unable to find %s',fname)
+    return
+else
+    CLASP = load(fname); 
+end
 
+y = CLASP.CLASP.conc;
+
+%n0 = find(CLASP.CLASP.t(:,1)>=t1 & CLASP.CLASP.t(:,1)<=t2);
+plot(CLASP.CLASP.t,nansum(CLASP.CLASP.conc(:,1:16),2),'b-');
+
+
+%{
 x = data.CLASP;
 y= x.t; % output the time array
 
@@ -25,24 +41,12 @@ diff3 = y1 - y3;
 conc_arr = x.conc;
 
 
-
-
-% seems like diff1, diff2, diff3 are all equal
-
 % save data into csv file
 writematrix(conc_arr, 'clasp_conc.csv')
 writematrix(y1,'clasp_time.csv')
+%}
 
-% plot time series of concentration vs time 
+%writematrix(CLASP.CLASP.conc(:,1:16),'clasp_conc_2.csv')
+writematrix(CLASP.CLASP.calibr(1).lowerR, 'clasp_calibr_2.csv')
+writematrix(CLASP.CLASP.meanR,'clasp_meanR_2.csv')
 
-
-% plot time series of concentration vs time .. from this axis, then
-% velocity vs time from the other data set 
-
-
-% plot drift density time series and mark which point had blowing snow
-% events 
-
-
-% new plot with coarse aerosol plot contour plot as a function of windspeed
-% with bins

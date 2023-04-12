@@ -475,6 +475,10 @@ beta_mosaic = 2.64 * new_v_vector+27.51
 % alpha_mosaic = -0.1920*new_v_vector + 4.0309;
 % beta_mosaic  = 8.5123*new_v_vector - 30.9876;
 
+% exponential and logarithmic fit to the data
+alpha_mosaic = 11.58 * exp(-0.428 * new_v_vector)+ 1.911
+beta_mosaic = 37.97 * log(0.38*new_v_vector)
+
 
 param_diameter = alpha_mosaic.*beta_mosaic;
 
@@ -487,8 +491,9 @@ plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the 
 xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Near surface snow Mean Diameter (\mum) vs 10m windspeed (m/s) - NIce','fontsize',18)
+%title('Near surface snow Mean Diameter (\mum) vs 10m windspeed (m/s) - NIce','fontsize',18)
 ylim([50,300]);
+set(gca,'FontSize',14)
 %hcb = colorbar
 %hcb.Title.String = "Number of data points"
 %hcb.FontSize = 12

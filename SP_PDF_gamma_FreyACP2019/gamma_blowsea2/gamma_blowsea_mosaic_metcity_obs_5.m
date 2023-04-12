@@ -61,9 +61,6 @@ U2_2 = U1 * log(8e-2/zo_2)/log(10/zo_2);
 
 U2_2 = U1 % using 10m windspeed for this parametrization
 
-
-
-
 alpha = [];
 beta  = [];
 alpha_1p = [];
@@ -81,6 +78,7 @@ dp_a = DATA.dp_bins(:,3);
 dp_mean = zeros(length(N_a),1);
 sum_a = 0;
 sum_b = 0;
+
 for i=1:length(N_a)
     for j = 1:length(dp_a)
         sum_a = sum_a+N_a(i,j)*dp_a(j);
@@ -95,6 +93,7 @@ dp_mean_arr = []
 dp_25_arr = []
 dp_75_arr = []
 fig_counter = 1
+
 for i = 1:(length(velocity_bins)-1)
 
     %n = find(DATA.t(:,1)>=t1 & DATA.t(:,1)<t2);
@@ -398,6 +397,7 @@ a1 = datestr(DATA.t, 'mm/dd/YYYY');
 store_month = []
 
 for i = 1:length(a1)
+    
    %store_month = [store_month str2num(a1(i,1:2))]; % this is the line for month 
    store_month = [store_month str2num(a1(i,7:end))]; % this is the line for year
 end

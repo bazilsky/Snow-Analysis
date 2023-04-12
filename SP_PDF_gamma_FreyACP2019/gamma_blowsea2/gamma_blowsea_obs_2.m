@@ -371,6 +371,10 @@ xdots(:) = ut;
 alpha_mosaic = -0.0316*new_v_vector+2.3736;
 beta_mosaic  = 2.6376*new_v_vector + 27.5125;
 
+% exponential and logarithmic fit to the data
+alpha_mosaic = 11.58 * exp(-0.428 * new_v_vector)+ 1.911
+beta_mosaic = 37.97 * log(0.38*new_v_vector)
+
 param_diameter = alpha_mosaic.*beta_mosaic;
 
 %plot(new_v_vector,alpha.*beta,'k.-','linewidth',1.5)
@@ -382,12 +386,13 @@ plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the 
 xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - Weddell Sea','fontsize',18)
+%title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - Weddell Sea','fontsize',18)
 ylim([50,300]);
+set(gca, 'fontsize', 20)
 %hcb = colorbar;
 %hcb.Title.String = "Number of data points";
 %hcb.FontSize = 12;
-
+An example salinity distribution for snow from the surface up to 30cm, along with the normal distribution fit for the same data is shown in Figure 10. 
 hold all 
 
 e = find(~isnan(dp_mean_arr));

@@ -46,9 +46,7 @@ new_v_vector  = (0:0.5:10);
 
 % new block of code to automate velocity_bins and new_v_vector 
 velocity_bins = (1:0.1:20);
-new_v_vector = []
-
-
+new_v_vector = [];
 
 for p = 1: length(velocity_bins)-1
     vbin_mean = (velocity_bins(p)+velocity_bins(p+1))/2;
@@ -146,7 +144,7 @@ for i = 1:(length(velocity_bins)-1)
     T = nanmean(DATA.T29m(n,:),1);
     dp_mean_obs = nanmean(dp_mean(n,:),1);
     dp_25_obs   = prctile(dp_mean(n,:),25);
-    dp_75_obs   = prctile(dp_mean(n,:),75); 
+    dp_75_obs   = prctile(dp_mean(n,:),75);
     % ust = nanmean(DATA.ust(n));
     % U10m = nanmean(DATA.U10m(n));
     % remove bot & top bin of spc number densities because spurious particle detection
@@ -365,13 +363,17 @@ title('Mean Diamter (\mum) vs Surface windspeed (m/s)','fontsize',18)
 
 figure(9)
 ydots = 0:1:370
-ut = 4.9;  % Thresold windspeed for the weddell sea .. blowsea camp
+ut = 4.9;  % Thresold windspeed for the weddell sea .. blowsea campaign
 xdots = zeros(length(ydots),1);
 xdots(:) = ut;
 
 % new parametrisation 
 alpha_mosaic = -0.0316*new_v_vector+2.3736;
 beta_mosaic  = 2.6376*new_v_vector + 27.5125;
+
+% exponential and logarithmic fit to the data
+alpha_mosaic = 11.58 * exp(-0.428 * new_v_vector)+ 1.911
+beta_mosaic = 37.97 * log(0.38*new_v_vector)
 
 param_diameter = alpha_mosaic.*beta_mosaic;
 
@@ -384,12 +386,13 @@ plot(xdots,ydots,'b--','linewidth',4) % plotting a vertical line indicating the 
 xlabel('U10m (m/s)','fontsize',20)
 %set(gca,'YScale','log')
 ylabel('Mean Diameter (\mum)','fontsize',20)
-title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - Weddell Sea','fontsize',18)
+%title('Near surface snow Mean Diamter (\mum) vs 10m windspeed (m/s) - Weddell Sea','fontsize',18)
 ylim([50,300]);
+set(gca, 'fontsize', 20)
 %hcb = colorbar;
 %hcb.Title.String = "Number of data points";
 %hcb.FontSize = 12;
-
+An example salinity distribution for snow from the surface up to 30cm, along with the normal distribution fit for the same data is shown in Figure 10. 
 hold all 
 
 e = find(~isnan(dp_mean_arr));
