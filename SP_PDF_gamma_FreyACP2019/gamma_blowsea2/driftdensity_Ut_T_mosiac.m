@@ -92,7 +92,7 @@ end
 
 
 
-%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%% takeing a rolling mean 
 
 avg_bin = 10;
 
@@ -179,7 +179,8 @@ for i = 1:(length(density_slice)-1)
 end
 
 slope_arr_degrees = atand(slope_arr);
-%slope_arr_degrees = slope_arr_degrees';
+%slope_arr_degrees = slope_arr_degrees'; % trying to use slope to find
+%blowing snow event 
 p = find(slope_arr_degrees(:)>45 & slope_arr_degrees(:)<80);
 
 
@@ -213,7 +214,7 @@ x = find(roll_density == 0);
 dens_zero = roll_density(x);
 
 
-figure(1)
+figure(1) % drift density time series
 %yyaxis left
 xlabel('Time','FontSize',18)
 %plot(roll_t,roll_density,'b.')
@@ -226,7 +227,7 @@ grid on
 
 time_diff = 0;
 
-figure(7)
+figure(7) % time and find index 
 plot(x, roll_t(x),'b.')
 title('Time vs Index', 'fontsize',20)
 xlabel('Index','FontSize',18)
@@ -243,7 +244,7 @@ for i = 1:(length(x)-1)
         
     end
 end
-
+num_BSn_events = length(zeros_index)
 count = [];
 counter = 0;
 t_noaa_4 = [];
@@ -283,6 +284,7 @@ title('U10m vs T2m','Fontsize',20)
 xlabel('T_skin (C)','FontSize',18)
 ylabel('U10m (m/s)','FontSize',18)
 
+
 T_bins = -50:0.2:10;
 %T_bins = -50:0.2:-49.6
 mean_Tbin = [];
@@ -295,17 +297,17 @@ vel25_2m =[];
 vel75_2m = [];
 
 for i=1:(length(T_bins)-1)
-
-    a = find(T_noaa_skin_2>=T_bins(i) & T_noaa_skin_2<=T_bins(i+1))
     
+    a = find(T_noaa_skin_2>=T_bins(i) & T_noaa_skin_2<=T_bins(i+1))
+        
     if ~isnan(nanmean(T_noaa_skin_2(a)))
+        
         mean_Tbin = [mean_Tbin nanmean(T_noaa_skin_2(a))];
         mean_vel_zero = [mean_vel_zero nanmean(vel_zero(a))];
         mean_Tbin_2m = [mean_Tbin_2m nanmean(T_noaa_2m_2(a))];
         vel25  = [vel25 prctile(vel_zero(a),25)];
         vel75  = [vel75 prctile(vel_zero(a),75)];
         
-
     end
 
 end
@@ -313,7 +315,7 @@ end
 
 
 
-figure(4)
+figure(4) 
 
 plot(T_fine,Ut,'r-','LineWidth',2)
 hold on

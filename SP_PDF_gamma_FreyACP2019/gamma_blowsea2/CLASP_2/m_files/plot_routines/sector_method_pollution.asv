@@ -1,0 +1,198 @@
+clc
+clear all 
+
+% time interval when the code runs 
+
+t1 = datetime('02-Dec-2019 00:01'); 
+t2 = datetime('30-Jul-2020 00:00'); %
+
+
+%% read data from the cpc on the ship --- ship position (psi cpc ship)
+filename_ship = '/Users/ananth/Downloads/cpc3025_uncorrected_10s.tab';
+
+data_ship = readtable(filename_ship,'Delimiter','\t','FileType','Text');
+
+ship_lat = data_ship.Latitude;
+ship_lon = data_ship.Longitude;
+ship_time = data_ship.Date_Time; % first time is 1st october 2019 and last is 30th september 2020
+
+% t filter ---- 
+t_filter_1 = find(ship_time>=t1 & ship_time<=t2);
+ship_lat = ship_lat(t_filter_1);
+ship_lon = ship_lon(t_filter_1);
+ship_time = ship_time(t_filter_1);
+
+time_diff_minutes = minutes(ship_time - ship_time(1));
+
+minute_averages_latitude = accumarray(1 + floor(time_diff_minutes), ship_lat, [], @mean);
+
+% Calculate 1-minute averages of time using accumarray
+minute_averages_time = accumarray(1 + floor(time_diff_minutes), time_diff_minutes, [], @mean);
+
+% Convert the minute indices back to datetime format
+minute_averages_time = ship_time(1) + minutes(minute_averages_time);
+
+% convert the decimal seconds to 0. 
+minute_averages_time_reset = datetime(minute_averages_time.Year, minute_averages_time.Month, minute_averages_time.Day, ...
+    minute_averages_time.Hour, minute_averages_time.Minute, zeros(size(minute_averages_time.Second)));
+
+ship_time_new = minute_averages_time_reset;
+
+%% read data from the spc or met tower
+
+clasp_path = '/Users/ananth/Desktop/bas_github_scripts/bas_github_scripts/SP_PDF_gamma_FreyACP2019/gamma_blowsea2/CLASP_2/data/';
+clasp_fname = sprintf('%sclasp_all_1min.mat',clasp_path);
+
+clasp_arr = load(clasp_fname);
+
+% clasp files doesnt have lat lon, so we can esimate lat lon using SPC
+
+pth_SPC = '/Users/ananth/Desktop/bas_github_scripts/bas_github_scripts/SP_PDF_gamma_FreyACP2019/data_2/';
+spc_file = sprintf('%sU1104_8cm_1min.mat',pth_SPC);
+
+spc_arr = load(spc_file);
+
+spc_lat = spc_arr.lat;
+spc_lon = spc_arr.lon;
+spc_time = spc_arr.t;   % first time is 2 December 2019 and last is 30th July 2020
+spc_time = datetime(spc_time,'ConvertFrom','datenum');
+
+t_filter_2 = find(spc_time>=t1 & spc_time<=t2);
+spc_lat = spc_lat(t_filter_2);
+spc_lon = spc_lon(t_filter_2);
+spc_time = spc_time(t_filter_2);
+
+%% read wind velocity components 
+wind_arr = load('uvw_met_tower.mat');
+
+wind_time = wind_arr.time_arr; % first time is 15th october 2019 and last is 6th august 2020
+wind_u = wind_arr.u;
+wind_v = wind_arr.v;
+wind_w = wind_arr.w;
+
+% mask values where velocity = 0
+
+wind_u(wind_u<20) = 0;
+wind_v(wind_v<20) = 0;
+wind_w(wind_w<20) = 0;
+
+
+t_filter_3 = find(wind_time>=t1 & wind_time<=t2);
+
+wind_u_org = wind_u(t_filter_3);
+wind_v_org = wind_v(t_filter_3);
+wind_w_org = wind_w(t_filter_3);
+wind_time_org = wind_time(t_filter_3);
+
+wind_u = wind_u(t_filter_3);
+wind_v = wind_v(t_filter_3);
+wind_w = wind_w(t_filter_3);
+wind_time = wind_time(t_filter_3);
+
+%% all arrays have diffferent resolution 
+
+% first is the time period filter
+
+%common_time = intersect(intersect(ship_time_new,spc_time),wind_time);
+
+% index_1 = find(ismember(ship_time_new,common_time));
+% index_2 = find(ismember(spc_time,common_time));
+% index_3 = find(ismember(wind_time,common_time));
+% common_time = intersect(intersect(ship_time_new, spc_time), wind_time);
+% 
+% index_1 = find(ship_time_new == common_time);
+% index_2 = find(spc_time == common_time);
+% index_3 = find(wind_time == common_time);
+common_time = intersect(intersect(ship_time_new, spc_time), wind_time);
+
+[~, unique_index_1] = unique(ship_time_new, 'stable');
+index_1 = unique_index_1(ismember(ship_time_new(unique_index_1), common_time));
+%index_1 = find(ismember(ship_time_new, common_time));
+index_2 = find(ismember(spc_time, common_time));
+index_3 = find(ismember(wind_time, common_time));
+
+ship_time_new_2 = ship_time_new(index_1);
+spc_time_2 = spc_time(index_2);
+wind_time_2 = wind_time(index_3);
+
+%ship_lat = unique(ship_lat(index_1),'stable');
+%ship_lon = unique(ship_lon(index_1),'stable');
+
+ship_lat = ship_lat(index_1);
+ship_lon = ship_lon(index_1);
+
+spc_lat = spc_lat(index_2);
+spc_lon = spc_lon(index_2);
+
+% convert lat and lon to radians 
+spc_lat_rad = spc_lat * 3.14/180;
+spc_lon_rad = spc_lon * 3.14/180;
+
+ship_lat_rad = ship_lat * 3.14/180;
+ship_lon_rad = ship_lon * 3.14/180;
+
+% convert to cartesion coordinate system
+R = 6371; % 6371km is the radius of the earth 
+x2 = R .* cos(spc_lat_rad) .* cos(spc_lon_rad);
+y2 = R .* cos(spc_lat_rad) .* sin(spc_lon_rad);
+z2 = R .* sin(spc_lat_rad);
+
+x1 = R .* cos(ship_lat_rad) .* cos(ship_lon_rad);
+y1 = R .* cos(ship_lat_rad) .* sin(ship_lon_rad);
+z1 = R .* sin(ship_lat_rad);
+
+%vector between the two points spc and ship
+x21 = x2-x1;
+y21 = y2-y1;
+z21 = z2-z1;
+
+% cartesion corrdinates of wind direction 
+
+% wind_time_2 = find(ismember(ship_time_new_2,wind_time)); % its the same length as the above arrays
+% 
+% wind_u_2 = wind_u(wind_time == ship_time_new_2);
+
+wind_u_2 = wind_u(ismember(wind_time, ship_time_new_2));
+wind_v_2 = wind_v(ismember(wind_time, ship_time_new_2));
+wind_w_2 = wind_w(ismember(wind_time, ship_time_new_2));
+
+% find angle between two vectors
+% Simulated data: Replace these with your actual data
+% x = rand(1, 2000);
+% y = rand(1, 2000);
+% z = rand(1, 2000);
+% a = rand(1, 2000);
+% b = rand(1, 2000);
+% c = rand(1, 2000);
+
+wind_u_3 = double(wind_u_2);
+wind_v_3 = double(wind_v_2);
+wind_w_3 = double(wind_w_2);
+
+% Calculate dot products for each pair of vectors
+dot_products = x21 .* wind_u_2 + y21 .* wind_v_2 + z21 .* wind_w_2;
+
+% Calculate magnitudes for each pair of vectors
+magnitudes_A = sqrt(x21.^2 + y21.^2 + z21.^2);
+magnitudes_B = sqrt(wind_u_2.^2 + wind_v_2.^2 + wind_w_2.^2);
+
+% Calculate the cosines of the angles
+cos_theta = dot_products ./ (magnitudes_A .* magnitudes_B);
+
+% Handle numerical errors that might push cos_theta slightly out of the [-1, 1] range
+cos_theta = min(max(cos_theta, -1), 1);
+
+% Calculate the angles in radians
+theta_rad = acos(cos_theta);
+
+% Convert the angles to degrees
+theta_deg = rad2deg(theta_rad);
+
+% theta_deg is now a 1x2000 array containing the angles in degrees
+
+
+
+
+
+
+
